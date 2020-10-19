@@ -1,9 +1,10 @@
-[![Build Status](https://travis-ci.com/fdinsen/CA2.svg?branch=main)](https://travis-ci.com/fdinsen/CA2)
+[![Build Status](https://travis-ci.com/fdinsen/CA2.svg?branch=developer)](https://travis-ci.com/fdinsen/CA2)
 
 Gruppe π, CA2 opgave
 
 Backend, main branch: https://fdinsen.com/CA2
-backend, developer branch: https://vangomango.dk/CA2
+
+Backend, developer branch: https://vangomango.dk/CA2
 
 Frontend: N/A
 
