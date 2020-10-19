@@ -14,11 +14,11 @@ script:
   - mvn test
   - if [[ $TRAVIS_BRANCH == 'main' ]]; then
       mvn -Dremote.user=$REMOTE_USER -Dremote.password=$REMOTE_PW tomcat7:deploy;
-    else
-      if [[$TAVIS_BRANCH == 'developer']]; then
-        mvn -Dremote.user=$REMOTE_USER_B -Dremote.password=$REMOTE_PW_B -Ddeploy.server="https://vangomango.dk/manager/text" tomcat7:deploy;
-      fi
     fi
+    if [[$TAVIS_BRANCH == 'developer']]; then
+        mvn -Dremote.user=$REMOTE_USER_B -Dremote.password=$REMOTE_PW_B -Ddeploy.server="https://vangomango.dk/manager/text" tomcat7:deploy;
+    fi
+    
 
 services:
    - mysql
