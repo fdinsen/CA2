@@ -8,7 +8,7 @@
     <packaging>war</packaging>
 
 
-    <name>PriceTracker</name>
+    <name>CA2</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
