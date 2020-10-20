@@ -6,22 +6,20 @@
 package entities;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,8 +32,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a"),
     @NamedQuery(name = "Address.findByAId", query = "SELECT a FROM Address a WHERE a.aId = :aId"),
     @NamedQuery(name = "Address.findByStreet", query = "SELECT a FROM Address a WHERE a.street = :street"),
-    @NamedQuery(name = "Address.findByAdditionalInfo", query = "SELECT a FROM Address a WHERE a.additionalInfo = :additionalInfo"),
-    @NamedQuery(name = "Address.findByZipcode", query = "SELECT a FROM Address a WHERE a.zipcode = :zipcode")})
+    @NamedQuery(name = "Address.findByAdditionalInfo", query = "SELECT a FROM Address a WHERE a.additionalInfo = :additionalInfo")})
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,12 +49,9 @@ public class Address implements Serializable {
     @Size(max = 255)
     @Column(name = "additionalInfo")
     private String additionalInfo;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "zipcode")
-    private int zipcode;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "aId")
-    private List<Person> personList;
+    @JoinColumn(name = "zipcode", referencedColumnName = "zipcode")
+    @ManyToOne(optional = false)
+    private Cityinfo zipcode;
 
     public Address() {
     }
@@ -66,10 +60,9 @@ public class Address implements Serializable {
         this.aId = aId;
     }
 
-    public Address(Integer aId, String street, int zipcode) {
+    public Address(Integer aId, String street) {
         this.aId = aId;
         this.street = street;
-        this.zipcode = zipcode;
     }
 
     public Integer getAId() {
@@ -96,21 +89,12 @@ public class Address implements Serializable {
         this.additionalInfo = additionalInfo;
     }
 
-    public int getZipcode() {
+    public Cityinfo getZipcode() {
         return zipcode;
     }
 
-    public void setZipcode(int zipcode) {
+    public void setZipcode(Cityinfo zipcode) {
         this.zipcode = zipcode;
-    }
-
-    @XmlTransient
-    public List<Person> getPersonList() {
-        return personList;
-    }
-
-    public void setPersonList(List<Person> personList) {
-        this.personList = personList;
     }
 
     @Override
