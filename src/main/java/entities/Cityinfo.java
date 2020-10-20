@@ -46,7 +46,7 @@ public class Cityinfo implements Serializable {
     @Size(min = 1, max = 35)
     @Column(name = "city")
     private String city;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "zipcode")
+    @OneToMany(cascade = CascadeType.DETACH, mappedBy = "zipcode")
     private List<Address> addressList;
 
     public Cityinfo() {
@@ -108,7 +108,7 @@ public class Cityinfo implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Cityinfo[ zipcode=" + zipcode + " ]";
+        return "zipcode=" + zipcode + " city: " + city;
     }
     
 }

@@ -14,6 +14,7 @@ import java.util.List;
  * @author gamma
  */
 public class PersonDTO {
+
     private int phone;
     private String email;
     private String firstName;
@@ -22,15 +23,22 @@ public class PersonDTO {
     private String street;
     private String zipcode;
     private String city;
-    
+
     public PersonDTO(Person person) {
         this.phone = person.getPhone();
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        this.street = person.getAddress().getStreet();
-        this.zipcode = person.getAddress().getZipcode().getZipcode();
-        this.city = person.getAddress().getZipcode().getCity();
+        if (person.getAddress() != null) {
+            this.street = person.getAddress().getStreet();
+            
+            if (person.getAddress().getZipcode() != null) {
+                this.zipcode = person.getAddress().getZipcode().getZipcode();
+                this.city = person.getAddress().getZipcode().getCity();
+            }
+
+        }
+
         hobbies = new ArrayList();
     }
 
@@ -101,6 +109,5 @@ public class PersonDTO {
     public void setCity(String city) {
         this.city = city;
     }
-    
-    
+
 }

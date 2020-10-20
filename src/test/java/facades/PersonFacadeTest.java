@@ -7,8 +7,10 @@ import entities.Person;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,9 +55,12 @@ public class PersonFacadeTest {
         p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
         p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
         
-        Address a1 = new Address(1, "vej vej");
-        a1.setAdditionalInfo("");
-        a1.setZipcode(new Cityinfo("3400", "Hillerod"));
+        Cityinfo c = em.find(Cityinfo.class, "3400");
+        
+        a1 = new Address(1, "vej vej");
+        a1.setAdditionalInfo("Ingen ting her");
+        a1.setZipcode(c);
+        
         p1.setAddress(a1);
         
         try {
@@ -87,10 +92,19 @@ public class PersonFacadeTest {
         
         String actual = p.getFirstName();
         
-        assertEquals(expected, actual);
-                
+        assertEquals(expected, actual);           
     }
     
-    
-
+    @Test
+    public void getPersonByPhoneError(){
+        
+        NoResultException assertThrows;
+        
+        assertThrows = Assertions.assertThrows(NoResultException.class, () -> {
+            facade.getPersonByPhone(0);
+        });
+        
+        
+        
+    }
 }
