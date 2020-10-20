@@ -19,4 +19,9 @@ public class PersonResource {
     private static final PersonFacade FACADE =  PersonFacade.getPersonFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     
+    @GET
+    public String demo() {
+        return "{message: \"Hello, World\"";
+    }
+    
 }
