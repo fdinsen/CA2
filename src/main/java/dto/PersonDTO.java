@@ -28,9 +28,18 @@ public class PersonDTO {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        this.street = person.getAddress().getStreet();
-        this.zipcode = person.getAddress().getZipcode().getZipcode();
-        this.city = person.getAddress().getZipcode().getCity();
+        
+        if(person.getAddress() != null) {
+            this.street = person.getAddress().getStreet();
+        }
+        
+        if(person.getAddress().getZipcode() != null) {
+            this.zipcode = person.getAddress().getZipcode().getZipcode();
+        }
+        
+        if(person.getAddress().getZipcode().getCity() != null) {
+            this.city = person.getAddress().getZipcode().getCity();
+        }
         hobbies = new ArrayList();
     }
 

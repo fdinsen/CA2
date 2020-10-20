@@ -7,6 +7,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
+import dto.PersonDTO;
+import entities.Person;
+import entities.Address;
+import entities.Cityinfo;
 
 /**
  *
@@ -50,5 +54,31 @@ public class PersonFacade {
         
         return new PersonDTO(p);
     }
+   
+   
     
+    public PersonDTO createPerson(PersonDTO personToCreate) {
+        EntityManager em = getEntityManager();
+        try {
+            Person person = new Person(
+                personToCreate.getPhone(),
+                personToCreate.getEmail(),
+                personToCreate.getFirstName(),
+                personToCreate.getLastName());
+            Address address = new Address(
+                personToCreate.getStreet());
+            Cityinfo city = em.find(Cityinfo.class, personToCreate.getZipcode());
+            
+            address.setZipcode(city);
+            person.setAddress(address);
+            
+            em.getTransaction().begin();
+            em.persist(person);
+            em.getTransaction().commit();
+            
+            return personToCreate;
+        }finally {
+            em.close();
+        }
+    }
 }

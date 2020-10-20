@@ -92,5 +92,27 @@ public class PersonFacadeTest {
     }
     
     
+    public void testCreatePerson() {
+        //Arrange
+        Person personToCreate = new Person(
+            12345678, "email@email.com",
+            "Peter", "Petersen");
+        Address addressToCreate = new Address(
+            "Espegaardsvej 20");
+        Cityinfo city = new Cityinfo(
+            "2860");
+        addressToCreate.setZipcode(city);
+        personToCreate.setAddress(addressToCreate);
+        PersonDTO dto = PersonDTO(personToCreate);
+        
+        //Act
+        facade.createPerson(dto);
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        
+        //Assert
+        
+    }
+        
 
 }
