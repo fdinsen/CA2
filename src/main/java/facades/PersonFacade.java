@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -41,8 +42,12 @@ public class PersonFacade {
         
         EntityManager em = emf.createEntityManager();
         
-        Person p =  em.find(Person.class, phone);
-        System.out.println(p);
+        TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p WHERE p.phone = :phone",Person.class);
+        
+        query.setParameter("phone", phone);
+        
+        Person p = query.getSingleResult();
+        
         return new PersonDTO(p);
     }
     
