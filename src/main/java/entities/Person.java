@@ -8,6 +8,7 @@ package entities;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -63,7 +64,7 @@ public class Person implements Serializable {
     @ManyToMany(mappedBy = "personList")
     private List<Hobby> hobbyList;
     @JoinColumn(name = "a_id", referencedColumnName = "a_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Address address;
 
     public Person() {

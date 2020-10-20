@@ -7,6 +7,7 @@ package entities;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,7 +51,7 @@ public class Address implements Serializable {
     @Column(name = "additionalInfo")
     private String additionalInfo;
     @JoinColumn(name = "zipcode", referencedColumnName = "zipcode")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Cityinfo zipcode;
 
     public Address() {
