@@ -63,7 +63,7 @@ public class Person implements Serializable {
     private List<Hobby> hobbyList;
     @JoinColumn(name = "a_id", referencedColumnName = "a_id")
     @ManyToOne(optional = false)
-    private Address aId;
+    private Address address;
 
     public Person() {
     }
@@ -120,12 +120,12 @@ public class Person implements Serializable {
         this.hobbyList = hobbyList;
     }
 
-    public Address getAId() {
-        return aId;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setAId(Address aId) {
-        this.aId = aId;
+    public void setAddress(Address aId) {
+        this.address = aId;
     }
 
     @Override
