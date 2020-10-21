@@ -30,6 +30,8 @@ public class PersonFacadeTest {
 
     Address a1;
 
+    public static Cityinfo test;
+
     Cityinfo c;
     Cityinfo c1;
     Cityinfo c2;
@@ -46,19 +48,27 @@ public class PersonFacadeTest {
 
         try {
             em.getTransaction().begin();
-            Cityinfo c = new Cityinfo("3360", "Liseleje");
-            Cityinfo c1 = new Cityinfo("3370", "Melby");
-            Cityinfo c2 = new Cityinfo("3390", "Hundested");
-            Cityinfo c3 = new Cityinfo("3400", "Hillerød");
+            test = em.find(Cityinfo.class, "3400");
 
-            em.persist(c);
-            em.persist(c1);
-            em.persist(c2);
-            em.persist(c3);
-            
-            em.getTransaction().commit();
+            if (test == null) {
+
+                Cityinfo c = new Cityinfo("3360", "Liseleje");
+                Cityinfo c1 = new Cityinfo("3370", "Melby");
+                Cityinfo c2 = new Cityinfo("3390", "Hundested");
+                Cityinfo c3 = new Cityinfo("3400", "Hillerød");
+
+                em.persist(c);
+                em.persist(c1);
+                em.persist(c2);
+                em.persist(c3);
+
+                em.getTransaction().commit();
+            }else{
+                em.getTransaction().commit();
+            }
             
         } finally {
+            
             em.close();
         }
     }
@@ -113,7 +123,7 @@ public class PersonFacadeTest {
         String expected = p1.getFirstName();
         String exCity = p1.getAddress().getZipcode().getCity();
         String exStreet = p1.getAddress().getStreet();
-        
+
         PersonDTO p = facade.getPersonByPhone(p1.getPhone());
 
         String actual = p.getFirstName();

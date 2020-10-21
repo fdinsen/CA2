@@ -3,6 +3,7 @@ package rest;
 import entities.Address;
 import entities.Cityinfo;
 import entities.Person;
+import static facades.PersonFacadeTest.test;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -64,19 +65,31 @@ public class PersonResourceTest {
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
         
-        em.getTransaction().begin();
-            Cityinfo c = new Cityinfo("3360", "Liseleje");
-            Cityinfo c1 = new Cityinfo("3370", "Melby");
-            Cityinfo c2 = new Cityinfo("3390", "Hundested");
-            Cityinfo c3 = new Cityinfo("3400", "Hillerød");
-
-            em.persist(c);
-            em.persist(c1);
-            em.persist(c2);
-            em.persist(c3);
+        try {
+            em.getTransaction().begin();
             
-            em.getTransaction().commit();
-        
+            test = em.find(Cityinfo.class, "3400");
+
+            if (test == null) {
+
+                Cityinfo c = new Cityinfo("3360", "Liseleje");
+                Cityinfo c1 = new Cityinfo("3370", "Melby");
+                Cityinfo c2 = new Cityinfo("3390", "Hundested");
+                Cityinfo c3 = new Cityinfo("3400", "Hillerød");
+
+                em.persist(c);
+                em.persist(c1);
+                em.persist(c2);
+                em.persist(c3);
+
+                em.getTransaction().commit();
+            }else{
+                em.getTransaction().commit();
+            }
+            
+        } finally {
+            em.close();
+        }
     }
 
     @AfterAll
