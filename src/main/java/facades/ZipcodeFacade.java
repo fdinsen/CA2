@@ -30,7 +30,7 @@ public class ZipcodeFacade {
      * @param _emf
      * @return an instance of this facade class.
      */
-    public static ZipcodeFacade getPersonFacade(EntityManagerFactory _emf) {
+    public static ZipcodeFacade getZipcodeFacade(EntityManagerFactory _emf) {
         if (instance == null) {
             emf = _emf;
             instance = new ZipcodeFacade();
