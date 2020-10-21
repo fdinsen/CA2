@@ -1,5 +1,6 @@
 package facades;
 
+import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.Person;
 import java.util.List;
@@ -11,6 +12,9 @@ import dto.PersonDTO;
 import entities.Person;
 import entities.Address;
 import entities.Cityinfo;
+import entities.Hobby;
+import exceptions.HobbyNotFound;
+import exceptions.PersonNotFound;
 
 /**
  *
@@ -77,6 +81,30 @@ public class PersonFacade {
             em.getTransaction().commit();
             
             return personToCreate;
+        }finally {
+            em.close();
+        }
+    }
+    
+    public HobbyDTO addHobbyToPerson(int personID, String hobbyName) throws HobbyNotFound, PersonNotFound {
+        EntityManager em = getEntityManager();
+        try {
+            Person person = em.find(Person.class, personID);
+            Hobby hobby = em.find(Hobby.class, hobbyName);
+            if(person == null) {
+                throw new PersonNotFound("No person found by id " + personID);
+            }
+            if(hobby == null){
+                throw new HobbyNotFound("No hobby found by id " + hobbyName);
+            }
+            person.addHobby(hobby);
+            
+            em.getTransaction().begin();
+            
+            em.persist(person);
+            
+            em.getTransaction().commit();
+            return new HobbyDTO(hobby);
         }finally {
             em.close();
         }
