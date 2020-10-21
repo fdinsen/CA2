@@ -30,7 +30,7 @@ public class PersonResource {
     @GET
     @Produces({MediaType.APPLICATION_JSON})
     public String getById(@PathParam("phone") int phone) {
-        System.out.println(phone);
+
         PersonDTO personDTO = FACADE.getPersonByPhone(phone);
 
         return new Gson().toJson(personDTO);
