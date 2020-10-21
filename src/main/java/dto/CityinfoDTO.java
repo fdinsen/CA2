@@ -17,8 +17,8 @@ public class CityinfoDTO {
     private String city;
 
     public CityinfoDTO(Cityinfo city) {
-        this.zipcode = city.getCity();
-        this.city = city.getZipcode();
+        this.zipcode = city.getZipcode();
+        this.city = city.getCity();
     }
     
     public String getZipcode() {
