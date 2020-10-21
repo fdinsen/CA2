@@ -6,6 +6,12 @@ import entities.Address;
 import entities.Cityinfo;
 import entities.Person;
 import dto.PersonDTO;
+import entities.Hobby;
+import static facades.PersonFacadeTest.h1;
+import static facades.PersonFacadeTest.h2;
+import static facades.PersonFacadeTest.h3;
+import static facades.PersonFacadeTest.h4;
+import static facades.PersonFacadeTest.hTest;
 import static facades.PersonFacadeTest.test;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
@@ -38,7 +44,7 @@ public class PersonResourceTest {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
-    
+
     Person p1;
     Person p2;
     Person p3;
@@ -51,6 +57,8 @@ public class PersonResourceTest {
     Cityinfo c2;
     Cityinfo c3;
 
+    public static Hobby h1, h2, h3, h4;
+
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
@@ -61,18 +69,18 @@ public class PersonResourceTest {
         //This method must be called before you request the EntityManagerFactory
         EMF_Creator.startREST_TestWithDB();
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-        
+
         EntityManager em = emf.createEntityManager();
-        
+
         httpServer = startServer();
         //Setup RestAssured
         RestAssured.baseURI = SERVER_URL;
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
-        
+
         try {
             em.getTransaction().begin();
-            
+
             test = em.find(Cityinfo.class, "3400");
 
             if (test == null) {
@@ -86,13 +94,21 @@ public class PersonResourceTest {
                 em.persist(c1);
                 em.persist(c2);
                 em.persist(c3);
-
-                em.getTransaction().commit();
-            }else{
-                em.getTransaction().commit();
             }
-            
+            if (hTest == null) {
+                h1 = new Hobby("Dans", "https://en.wikipedia.org/wiki/Dance", "Generel", "Indendørs");
+                h2 = new Hobby("Skuespil", "https://en.wikipedia.org/wiki/Acting", "Generel", "Indendørs");
+                h3 = new Hobby("Brætspil", "https://en.wikipedia.org/wiki/Board_game", "Generel", "Indendørs");
+                h4 = new Hobby("Spil", "https://en.wikipedia.org/wiki/Games", "Generel", "Indendørs");
+
+                em.persist(h1);
+                em.persist(h2);
+                em.persist(h3);
+                em.persist(h4);
+            }
+
         } finally {
+            em.getTransaction().commit();
             em.close();
         }
     }
@@ -145,22 +161,23 @@ public class PersonResourceTest {
         System.out.println("Testing is server UP");
         given().when().get("person").then().statusCode(200);
     }
-    
+
     @Test
     public void testGetPersonByPerson() {
         given()
-                .get("/person/"+p1.getPhone())
+                .get("/person/" + p1.getPhone())
                 .then()
                 .assertThat()
-                .body("firstName",equalTo(p1.getFirstName()))
-                .body("lastName",equalTo(p1.getLastName()))
-                .body("email",equalTo(p1.getEmail()));
+                .body("firstName", equalTo(p1.getFirstName()))
+                .body("lastName", equalTo(p1.getLastName()))
+                .body("email", equalTo(p1.getEmail()));
     }
+
     @Test
-    public void testGetPersonError(){
+    public void testGetPersonError() {
         given().when().get("person/0").then().statusCode(500);
     }
-    
+
     @Test
     public void testCreatePerson() {
         int phone = 77553399;
@@ -173,20 +190,59 @@ public class PersonResourceTest {
         PersonDTO personToCreate = new PersonDTO(
                 phone, email, firstName,
                 lastName, street, zipcode);
-        
+
         given()
-            .contentType("application/json")
-            .body(GSON.toJson(personToCreate))
-            .post("person/")
-            .then()
-            .assertThat()
-            .statusCode(HttpStatus.OK_200.getStatusCode())
-            .body("phone", equalTo(phone)).and()
-            .body("email", equalTo(email)).and()
-            .body("firstName", equalTo(firstName)).and()
-            .body("street", equalTo(street)).and()
-            .body("zipcode", equalTo(zipcode));
-            
-                
+                .contentType("application/json")
+                .body(GSON.toJson(personToCreate))
+                .post("person/")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("phone", equalTo(phone)).and()
+                .body("email", equalTo(email)).and()
+                .body("firstName", equalTo(firstName)).and()
+                .body("street", equalTo(street)).and()
+                .body("zipcode", equalTo(zipcode));
+
+    }
+
+    @Test
+    public void testAddHobbyToPerson() {
+        String hobbyName = h1.getName();
+        int personId = p1.getPhone();
+
+        given()
+                .contentType("application/json")
+                .post("person/" + personId + "/hobby/" + hobbyName)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("hobbies[0].name", equalTo(hobbyName));
+    }
+
+    @Test
+    public void testAddHobbyToPersonNonExistentPerson() {
+        String hobbyName = h1.getName();
+        int personId = 1;
+
+        given()
+                .contentType("application/json")
+                .post("person/" + personId + "/hobby/" + hobbyName)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
+
+    @Test
+    public void testAddHobbyToPersonNonExistentHobby() {
+        String hobbyName = "Pastamaking";
+        int personId = p1.getPhone();
+
+        given()
+                .contentType("application/json")
+                .post("person/" + personId + "/hobby/" + hobbyName)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
 }

@@ -3,7 +3,10 @@ package rest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import dto.HobbyDTO;
 import dto.PersonDTO;
+import exceptions.HobbyNotFound;
+import exceptions.PersonNotFound;
 import utils.EMF_Creator;
 import facades.PersonFacade;
 import javax.persistence.EntityManagerFactory;
@@ -49,5 +52,16 @@ public class PersonResource {
         PersonDTO createdPerson = FACADE.createPerson(personToCreate);
         return Response.ok().entity(GSON.toJson(createdPerson)).build();
 
+    }
+    
+    @Path("{pid}/hobby/{hname}")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addHobbyToPerson(
+            @PathParam("pid") int pid,
+            @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound {
+        PersonDTO hobby = FACADE.addHobbyToPerson(pid, hobbyName);
+        return Response.ok().entity(GSON.toJson(hobby)).build();
     }
 }
