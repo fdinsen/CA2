@@ -42,6 +42,19 @@ public class PersonDTO {
         hobbies = new ArrayList();
     }
 
+    public PersonDTO(int phone, String email, String firstName, String lastName, String street, String zipcode) {
+        this.phone = phone;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.street = street;
+        this.zipcode = zipcode;
+        city = null;
+        hobbies = new ArrayList();
+    }
+    
+
+
     public int getPhone() {
         return phone;
     }
