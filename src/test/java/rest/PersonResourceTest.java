@@ -1,8 +1,11 @@
 package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import entities.Address;
 import entities.Cityinfo;
 import entities.Person;
+import dto.PersonDTO;
 import static facades.PersonFacadeTest.test;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
@@ -13,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
@@ -31,6 +35,7 @@ public class PersonResourceTest {
     //private static RenameMe r1, r2;
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
     
@@ -154,5 +159,34 @@ public class PersonResourceTest {
     @Test
     public void testGetPersonError(){
         given().when().get("person/0").then().statusCode(500);
+    }
+    
+    @Test
+    public void testCreatePerson() {
+        int phone = 77553399;
+        String email = "frederik@dinsen.net";
+        String firstName = "Frederik";
+        String lastName = "Dinsen";
+        String street = "Buddingevej 206";
+        String zipcode = "3400";
+
+        PersonDTO personToCreate = new PersonDTO(
+                phone, email, firstName,
+                lastName, street, zipcode);
+        
+        given()
+            .contentType("application/json")
+            .body(GSON.toJson(personToCreate))
+            .post("person/")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode())
+            .body("phone", equalTo(phone)).and()
+            .body("email", equalTo(email)).and()
+            .body("firstName", equalTo(firstName)).and()
+            .body("street", equalTo(street)).and()
+            .body("zipcode", equalTo(zipcode));
+            
+                
     }
 }
