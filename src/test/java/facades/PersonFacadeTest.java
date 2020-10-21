@@ -259,4 +259,26 @@ public class PersonFacadeTest {
         assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
     }
     
+    @Test
+    public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        EntityManager em = emf.createEntityManager();
+        int personId = p2.getPhone();
+        String hobbyName = h2.getName();
+        String hobbyName2 = h3.getName();
+        int expectedHobbyAmount = 2;
+        
+        //Act
+        facade.addHobbyToPerson(personId, hobbyName);
+        facade.addHobbyToPerson(personId, hobbyName2);
+        
+        Person actual = em.find(Person.class, personId);
+        
+        assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
+        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
+        
+        assertEquals(h3.getName(), actual.getHobbyList().get(1).getName());
+        assertEquals(h3.getCategory(), actual.getHobbyList().get(1).getCategory());
+    }
 }
