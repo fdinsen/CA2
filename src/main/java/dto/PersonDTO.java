@@ -5,6 +5,7 @@
  */
 package dto;
 
+import entities.Hobby;
 import entities.Person;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,17 +30,22 @@ public class PersonDTO {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
-        
+
         if (person.getAddress() != null) {
             this.street = person.getAddress().getStreet();
-            
+
             if (person.getAddress().getZipcode() != null) {
                 this.zipcode = person.getAddress().getZipcode().getZipcode();
                 this.city = person.getAddress().getZipcode().getCity();
             }
-
-        }
+        } 
         hobbies = new ArrayList();
+        int hobbysize = person.getHobbyList().size();
+        if (hobbysize > 0 ) {
+            for(Hobby hobby : person.getHobbyList()) {
+                hobbies.add(new HobbyDTO(hobby));
+            }
+        } 
     }
 
     public PersonDTO(int phone, String email, String firstName, String lastName, String street, String zipcode) {
@@ -52,8 +58,6 @@ public class PersonDTO {
         city = null;
         hobbies = new ArrayList();
     }
-    
-
 
     public int getPhone() {
         return phone;
@@ -92,7 +96,9 @@ public class PersonDTO {
     }
 
     public void addHobby(HobbyDTO hobby) {
-        hobbies.add(hobby);
+        if (hobby != null) {
+            hobbies.add(hobby);
+        }
     }
 
     public void setHobbies(List<HobbyDTO> hobbies) {

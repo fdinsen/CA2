@@ -86,7 +86,7 @@ public class PersonFacade {
         }
     }
     
-    public HobbyDTO addHobbyToPerson(int personID, String hobbyName) throws HobbyNotFound, PersonNotFound {
+    public PersonDTO addHobbyToPerson(int personID, String hobbyName) throws HobbyNotFound, PersonNotFound {
         EntityManager em = getEntityManager();
         try {
             Person person = em.find(Person.class, personID);
@@ -104,7 +104,9 @@ public class PersonFacade {
             em.persist(person);
             
             em.getTransaction().commit();
-            return new HobbyDTO(hobby);
+            
+            PersonDTO toReturn = new PersonDTO(person);
+            return toReturn;
         }finally {
             em.close();
         }

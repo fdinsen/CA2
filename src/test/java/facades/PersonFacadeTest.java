@@ -233,12 +233,12 @@ public class PersonFacadeTest {
         String hobbyName = h1.getName();
         
         //Act
-        HobbyDTO actual = facade.addHobbyToPerson(personId, hobbyName);
+        PersonDTO actual = facade.addHobbyToPerson(personId, hobbyName);
         
-        assertEquals(h1.getType(), actual.getType());
-        assertEquals(h1.getName(), actual.getName());
-        assertEquals(h1.getCategory(), actual.getCategory());
-        assertEquals(h1.getWikilink(), actual.getWikilink());
+        assertEquals(h1.getType(), actual.getHobbies().get(0).getType());
+        assertEquals(h1.getName(), actual.getHobbies().get(0).getName());
+        assertEquals(h1.getCategory(), actual.getHobbies().get(0).getCategory());
+        assertEquals(h1.getWikilink(), actual.getHobbies().get(0).getWikilink());
     }
     
     @Test
