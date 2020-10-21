@@ -82,7 +82,7 @@ public class PersonResourceTest {
             em.getTransaction().begin();
 
             test = em.find(Cityinfo.class, "3400");
-
+            hTest = em.find(Hobby.class, "Spil");
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -208,7 +208,7 @@ public class PersonResourceTest {
 
     @Test
     public void testAddHobbyToPerson() {
-        String hobbyName = h1.getName();
+        String hobbyName = "Dans";
         int personId = p1.getPhone();
 
         given()
@@ -220,9 +220,9 @@ public class PersonResourceTest {
                 .body("hobbies[0].name", equalTo(hobbyName));
     }
 
-    //@Test
+    @Test
     public void testAddHobbyToPersonNonExistentPerson() {
-        String hobbyName = h1.getName();
+        String hobbyName = "Dans";
         int personId = 1;
 
         given()
@@ -233,7 +233,7 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
 
-    //@Test
+    @Test
     public void testAddHobbyToPersonNonExistentHobby() {
         String hobbyName = "Pastamaking";
         int personId = p1.getPhone();
