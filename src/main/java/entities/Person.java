@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -62,7 +63,7 @@ public class Person implements Serializable {
     @Column(name = "lastName")
     private String lastName;
     @ManyToMany(mappedBy = "personList")
-    private List<Hobby> hobbyList;
+    private List<Hobby> hobbyList = new ArrayList();
     @JoinColumn(name = "a_id", referencedColumnName = "a_id")
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     private Address address;
@@ -120,6 +121,16 @@ public class Person implements Serializable {
 
     public void setHobbyList(List<Hobby> hobbyList) {
         this.hobbyList = hobbyList;
+    }
+    
+    public void addHobby(Hobby hobby) {
+        if(hobbyList == null) {
+            hobbyList = new ArrayList();
+        }
+        if(hobby != null) {
+            hobbyList.add(hobby);
+            hobby.addPersonToList(this);
+        }
     }
 
     public Address getAddress() {

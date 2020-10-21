@@ -1,9 +1,13 @@
 package facades;
 
+import dto.HobbyDTO;
 import entities.Cityinfo;
 import entities.Address;
 import entities.Person;
 import dto.PersonDTO;
+import entities.Hobby;
+import exceptions.HobbyNotFound;
+import exceptions.PersonNotFound;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -31,11 +35,14 @@ public class PersonFacadeTest {
     Address a1;
 
     public static Cityinfo test;
+    public static Hobby hTest;
 
     Cityinfo c;
     Cityinfo c1;
     Cityinfo c2;
     Cityinfo c3;
+    
+    public static Hobby h1, h2, h3, h4;
 
     public PersonFacadeTest() {
     }
@@ -50,7 +57,8 @@ public class PersonFacadeTest {
         try {
             em.getTransaction().begin();
             test = em.find(Cityinfo.class, "3400");
-
+            hTest = em.find(Hobby.class, "Dans");
+            
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -61,15 +69,22 @@ public class PersonFacadeTest {
                 em.persist(c);
                 em.persist(c1);
                 em.persist(c2);
-                em.persist(c3);
-
-                em.getTransaction().commit();
-            }else{
-                em.getTransaction().commit();
+                em.persist(c3);   
             }
             
+            if(hTest == null) {
+                h1 = new Hobby("Dans", "https://en.wikipedia.org/wiki/Dance", "Generel", "Indendørs");
+                h2 = new Hobby("Skuespil", "https://en.wikipedia.org/wiki/Acting", "Generel", "Indendørs");
+                h3 = new Hobby("Brætspil", "https://en.wikipedia.org/wiki/Board_game", "Generel", "Indendørs");
+                h4 = new Hobby("Spil", "https://en.wikipedia.org/wiki/Games", "Generel", "Indendørs");
+                
+                em.persist(h1);
+                em.persist(h2);
+                em.persist(h3);
+                em.persist(h4);
+            }    
         } finally {
-            
+            em.getTransaction().commit();
             em.close();
         }
     }
@@ -116,7 +131,7 @@ public class PersonFacadeTest {
             em.persist(p2);
             em.persist(p3);
             em.persist(p4);
-
+            
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -184,4 +199,64 @@ public class PersonFacadeTest {
             facade.getPersonByPhone(0);
         });
     }
+    
+    @Test
+    public void testAddHobbyToPersonNonExistentHobby() {
+        //Arrange
+        int personId = p1.getPhone();
+        String hobbyName = h1.getName();
+        HobbyNotFound assertThrows;
+        
+        //Act
+        assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
+            facade.addHobbyToPerson(personId, "fake hobby");
+        });
+    }
+    
+    @Test
+    public void testAddHobbyToPersonNonExistentPerson() {
+        //Arrange
+        int personId = p1.getPhone();
+        String hobbyName = h1.getName();
+        PersonNotFound assertThrows;
+        
+        //Act
+        assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.addHobbyToPerson(1, hobbyName);
+        });
+    }
+    
+    @Test
+    public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        int personId = p1.getPhone();
+        String hobbyName = h1.getName();
+        
+        //Act
+        HobbyDTO actual = facade.addHobbyToPerson(personId, hobbyName);
+        
+        assertEquals(h1.getType(), actual.getType());
+        assertEquals(h1.getName(), actual.getName());
+        assertEquals(h1.getCategory(), actual.getCategory());
+        assertEquals(h1.getWikilink(), actual.getWikilink());
+    }
+    
+    @Test
+    public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        EntityManager em = emf.createEntityManager();
+        int personId = p2.getPhone();
+        String hobbyName = h2.getName();
+        int expectedHobbyAmount = 1;
+        
+        //Act
+        facade.addHobbyToPerson(personId, hobbyName);
+        
+        Person actual = em.find(Person.class, personId);
+        
+        assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
+        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
+    }
+    
 }

@@ -6,6 +6,7 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -63,7 +64,7 @@ public class Hobby implements Serializable {
         @JoinColumn(name = "h_name", referencedColumnName = "name")}, inverseJoinColumns = {
         @JoinColumn(name = "p_phone", referencedColumnName = "phone")})
     @ManyToMany
-    private List<Person> personList;
+    private List<Person> personList = new ArrayList();
 
     public Hobby() {
     }
@@ -119,6 +120,12 @@ public class Hobby implements Serializable {
     public void setPersonList(List<Person> personList) {
         this.personList = personList;
     }
+    
+    public void addPersonToList(Person person) {
+        if(person != null) {
+            personList.add(person);
+        } 
+    } 
 
     @Override
     public int hashCode() {
