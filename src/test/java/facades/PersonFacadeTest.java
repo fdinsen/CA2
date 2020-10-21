@@ -137,16 +137,20 @@ public class PersonFacadeTest {
 
     }
 
+    @Test
     public void testCreatePerson() {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int phone = 12345678;
+        int phone = 98127634;
         Person personToCreate = new Person(
                 phone, "email@email.com",
                 "Peter", "Petersen");
         Address addressToCreate = new Address(
                 "Espegaardsvej 20");
-        Cityinfo city = em.find(Cityinfo.class, "2860");
+        Cityinfo city = em.find(Cityinfo.class, "3360");
+        if(city == null) {
+            city = new Cityinfo("3360", "Liseleje");
+        }
         addressToCreate.setZipcode(city);
         personToCreate.setAddress(addressToCreate);
         PersonDTO dto = new PersonDTO(personToCreate);
