@@ -65,6 +65,10 @@ public class Address implements Serializable {
         this.aId = aId;
         this.street = street;
     }
+    
+    public Address(String street) {
+        this.street = street;
+    }
 
     public Integer getAId() {
         return aId;

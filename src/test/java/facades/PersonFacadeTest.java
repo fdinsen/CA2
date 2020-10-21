@@ -1,9 +1,9 @@
 package facades;
 
-import dto.PersonDTO;
-import entities.Address;
 import entities.Cityinfo;
+import entities.Address;
 import entities.Person;
+import dto.PersonDTO;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -44,6 +44,7 @@ public class PersonFacadeTest {
     public static void setUpClass() {
         emf = EMF_Creator.createEntityManagerFactoryForTest();
         facade = PersonFacade.getPersonFacade(emf);
+
         EntityManager em = emf.createEntityManager();
 
         try {
@@ -83,6 +84,16 @@ public class PersonFacadeTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+
+        p1 = new Person(12345678, "mail", "navn", "andetNavn");
+        p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
+        p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
+        p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
+
+        Address a1 = new Address(1, "vej vej");
+        a1.setAdditionalInfo("");
+        a1.setZipcode(new Cityinfo("3400", "Hillerod"));
+        p1.setAddress(a1);
 
         try {
             em.getTransaction().begin();
@@ -133,6 +144,35 @@ public class PersonFacadeTest {
         assertEquals(expected, actual);
         assertEquals(exCity, actualCity);
         assertEquals(exStreet, acStreet);
+
+    }
+
+    @Test
+    public void testCreatePerson() {
+        //Arrange
+        EntityManager em = emf.createEntityManager();
+        int phone = 98127634;
+        Person personToCreate = new Person(
+                phone, "email@email.com",
+                "Peter", "Petersen");
+        Address addressToCreate = new Address(
+                "Espegaardsvej 20");
+        Cityinfo city = em.find(Cityinfo.class, "3360");
+        if(city == null) {
+            city = new Cityinfo("3360", "Liseleje");
+        }
+        addressToCreate.setZipcode(city);
+        personToCreate.setAddress(addressToCreate);
+        PersonDTO dto = new PersonDTO(personToCreate);
+
+        //Act
+        facade.createPerson(dto);
+
+        //PersonDTO actual = facade.getPersonByPhone(phone);
+        Person actual = em.find(Person.class, phone);
+
+        //Assert
+        assertEquals(dto.getEmail(), actual.getEmail());
     }
 
     @Test
@@ -143,6 +183,5 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(NoResultException.class, () -> {
             facade.getPersonByPhone(0);
         });
-
     }
 }

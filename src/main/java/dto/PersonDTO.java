@@ -29,6 +29,7 @@ public class PersonDTO {
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
         this.lastName = person.getLastName();
+        
         if (person.getAddress() != null) {
             this.street = person.getAddress().getStreet();
             
@@ -38,7 +39,6 @@ public class PersonDTO {
             }
 
         }
-
         hobbies = new ArrayList();
     }
 
