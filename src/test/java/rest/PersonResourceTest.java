@@ -1,5 +1,9 @@
 package rest;
 
+import entities.Address;
+import entities.Cityinfo;
+import entities.Person;
+import static facades.PersonFacadeTest.test;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -9,14 +13,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
-import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
@@ -30,6 +33,18 @@ public class PersonResourceTest {
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
     private static EntityManagerFactory emf;
+    
+    Person p1;
+    Person p2;
+    Person p3;
+    Person p4;
+
+    Address a1;
+
+    Cityinfo c;
+    Cityinfo c1;
+    Cityinfo c2;
+    Cityinfo c3;
 
     static HttpServer startServer() {
         ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
@@ -41,12 +56,40 @@ public class PersonResourceTest {
         //This method must be called before you request the EntityManagerFactory
         EMF_Creator.startREST_TestWithDB();
         emf = EMF_Creator.createEntityManagerFactoryForTest();
-
+        
+        EntityManager em = emf.createEntityManager();
+        
         httpServer = startServer();
         //Setup RestAssured
         RestAssured.baseURI = SERVER_URL;
         RestAssured.port = SERVER_PORT;
         RestAssured.defaultParser = Parser.JSON;
+        
+        try {
+            em.getTransaction().begin();
+            
+            test = em.find(Cityinfo.class, "3400");
+
+            if (test == null) {
+
+                Cityinfo c = new Cityinfo("3360", "Liseleje");
+                Cityinfo c1 = new Cityinfo("3370", "Melby");
+                Cityinfo c2 = new Cityinfo("3390", "Hundested");
+                Cityinfo c3 = new Cityinfo("3400", "Hillerød");
+
+                em.persist(c);
+                em.persist(c1);
+                em.persist(c2);
+                em.persist(c3);
+
+                em.getTransaction().commit();
+            }else{
+                em.getTransaction().commit();
+            }
+            
+        } finally {
+            em.close();
+        }
     }
 
     @AfterAll
@@ -63,15 +106,29 @@ public class PersonResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        
-        //TODO add items to database
-        //r1 = new RenameMe("Some txt", "More text");
-        //r2 = new RenameMe("aaa", "bbb");
+
         try {
             em.getTransaction().begin();
-            //em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            //em.persist(r1);
-            //em.persist(r2);
+            em.createNamedQuery("Person.deleteFrom").executeUpdate();
+
+            p1 = new Person(12345678, "mail", "navn", "andetNavn");
+            p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
+            p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
+            p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
+
+            Cityinfo c4 = em.find(Cityinfo.class, "3400");
+
+            a1 = new Address(1, "vej vej");
+            a1.setAdditionalInfo("Ingen ting her");
+            a1.setZipcode(c4);
+
+            p1.setAddress(a1);
+
+            em.persist(p1);
+            em.persist(p2);
+            em.persist(p3);
+            em.persist(p4);
+
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -83,5 +140,19 @@ public class PersonResourceTest {
         System.out.println("Testing is server UP");
         given().when().get("person").then().statusCode(200);
     }
-
+    
+    @Test
+    public void testGetPersonByPerson() {
+        given()
+                .get("/person/"+p1.getPhone())
+                .then()
+                .assertThat()
+                .body("firstName",equalTo(p1.getFirstName()))
+                .body("lastName",equalTo(p1.getLastName()))
+                .body("email",equalTo(p1.getEmail()));
+    }
+    @Test
+    public void testGetPersonError(){
+        given().when().get("person/0").then().statusCode(500);
+    }
 }

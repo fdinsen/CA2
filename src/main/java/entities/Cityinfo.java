@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Cityinfo.findAll", query = "SELECT c FROM Cityinfo c"),
     @NamedQuery(name = "Cityinfo.findByZipcode", query = "SELECT c FROM Cityinfo c WHERE c.zipcode = :zipcode"),
+    @NamedQuery(name = "Cityinfo.deleteFrom", query = "DELETE from Cityinfo"),
     @NamedQuery(name = "Cityinfo.findByCity", query = "SELECT c FROM Cityinfo c WHERE c.city = :city")})
 public class Cityinfo implements Serializable {
 
