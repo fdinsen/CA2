@@ -190,7 +190,7 @@ public class PersonFacadeTest {
         dto = facade.createPerson(dto);
 
         //PersonDTO actual = facade.getPersonByPhone(phone);
-        Person actual = em.find(Person.class, dto.getId());
+        Person actual = em.find(Person.class, dto.getPid());
 
         //Assert
         assertEquals(dto.getEmail(), actual.getEmail());
