@@ -296,7 +296,7 @@ public class PersonFacadeTest {
 
         PersonNotFound assertThrows;
 
-        PersonDTO pdto = facade.deletePerson(p1.getPhone());
+        PersonDTO pdto = facade.deletePerson(p1.getId());
 
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPersonById(p1.getId());
