@@ -263,6 +263,15 @@ public class PersonFacadeTest {
         //Act
         facade.addHobbyToPerson(personId, hobbyName);
         
+        TypedQuery<Hobby> q = em.createQuery("SELECT h FROM Hobby h" ,Hobby.class);
+            List<Hobby> list = q.getResultList();
+            System.out.println("SIZE OF HOBBY LIST: " + list.size());
+            for(Hobby h : list) {
+                System.out.println(h.getName());
+            }
+        
+        
+        
         Person actual = em.find(Person.class, personId);
         
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
