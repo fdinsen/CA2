@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class PersonDTO {
 
-    private int id;
+    private int pid;
     private int phone;
     private String email;
     private String firstName;
@@ -28,7 +28,7 @@ public class PersonDTO {
 
     public PersonDTO(Person person) {
         if(person.getId() != null) {
-            this.id = person.getId();
+            this.pid = person.getId();
         }
         this.phone = person.getPhone();
         this.email = person.getEmail();
@@ -63,7 +63,7 @@ public class PersonDTO {
         hobbies = new ArrayList();
     }
     public PersonDTO(int id, int phone, String email, String firstName, String lastName, String street, String zipcode) {
-        this.id = id;
+        this.pid = id;
         this.phone = phone;
         this.email = email;
         this.firstName = firstName;
@@ -74,12 +74,12 @@ public class PersonDTO {
         hobbies = new ArrayList();
     }
 
-    public int getId() {
-        return id;
+    public int getPid() {
+        return pid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPid(int pid) {
+        this.pid = pid;
     }
 
     public int getPhone() {

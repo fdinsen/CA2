@@ -83,7 +83,7 @@ public class PersonFacade {
             em.persist(person);
             em.getTransaction().commit();
             
-            personToCreate.setId(person.getId());
+            personToCreate.setPid(person.getId());
             return personToCreate;
         }catch(Exception ex){
             throw new MalformedRequest("Error, person must contain phone, email, first name, last name, street and zipcode");
