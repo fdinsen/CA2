@@ -85,7 +85,12 @@ public class PersonFacadeTest {
                 em.persist(h2);
                 em.persist(h3);
                 em.persist(h4);
-            }    
+            }else {
+                h1 = em.find(Hobby.class, "Dans");
+                h2 = em.find(Hobby.class, "Skuespil");
+                h3 = em.find(Hobby.class, "Brætspil");
+                h4 = em.find(Hobby.class, "Spil");
+            }
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -273,6 +278,21 @@ public class PersonFacadeTest {
         
         
         Person actual = em.find(Person.class, personId);
+        if(actual != null) {
+            System.out.println(actual.getFirstName());
+            if(actual.getHobbyList() != null) {
+                System.out.println("HOBBYLIST SIZE: " + actual.getHobbyList().size());
+                if(actual.getHobbyList().get(0) != null) {
+                    System.out.println(actual.getHobbyList().get(0).getName());
+                }else {
+                    System.out.println("HOBBY 0 IS NULL");
+                }
+            }else {
+                System.out.println("PERSON HOBBYLIST IS NULL");
+            }
+        } else {
+            System.out.println("PERSON IS NULL");
+        }
         
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
         assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());

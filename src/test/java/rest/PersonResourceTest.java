@@ -107,6 +107,11 @@ public class PersonResourceTest {
                 em.persist(h2);
                 em.persist(h3);
                 em.persist(h4);
+            }else {
+                h1 = em.find(Hobby.class, "Dans");
+                h2 = em.find(Hobby.class, "Skuespil");
+                h3 = em.find(Hobby.class, "Brætspil");
+                h4 = em.find(Hobby.class, "Spil");
             }
             em.getTransaction().commit();
         } finally {
