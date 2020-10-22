@@ -60,7 +60,6 @@ public class PersonFacadeTest {
             em.getTransaction().begin();
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
-            System.out.println("hTest in facadetest: " + hTest);
             
             if (test == null) {
 
@@ -141,13 +140,6 @@ public class PersonFacadeTest {
             em.persist(p4);
             
             em.getTransaction().commit();
-            
-            TypedQuery<Person> q = em.createQuery("SELECT p FROM Person p" ,Person.class);
-            List<Person> list = q.getResultList();
-            System.out.println("SIZE OF PERSON LIST: " + list.size());
-            for(Person p : list) {
-                System.out.println(p.getFirstName());
-            }
         } finally {
             em.close();
         }
@@ -205,7 +197,7 @@ public class PersonFacadeTest {
         assertEquals(dto.getEmail(), actual.getEmail());
     }
 
-    //@Test
+    @Test
     public void getPersonByPhoneError() {
 
         NoResultException assertThrows;
@@ -216,7 +208,7 @@ public class PersonFacadeTest {
         Assertions.assertNotNull(assertThrows);
     }
     
-    //@Test
+    @Test
     public void testAddHobbyToPersonNonExistentHobby() {
         //Arrange
         int personId = p1.getPhone();
@@ -227,9 +219,10 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
             facade.addHobbyToPerson(personId, "fake hobby");
         });
+        Assertions.assertNotNull(assertThrows);
     }
     
-    //@Test
+    @Test
     public void testAddHobbyToPersonNonExistentPerson() {
         //Arrange
         int personId = p1.getPhone();
@@ -240,6 +233,7 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.addHobbyToPerson(1, hobbyName);
         });
+        Assertions.assertNotNull(assertThrows);
     }
     
     @Test
@@ -268,31 +262,7 @@ public class PersonFacadeTest {
         //Act
         facade.addHobbyToPerson(personId, hobbyName);
         
-        TypedQuery<Hobby> q = em.createQuery("SELECT h FROM Hobby h" ,Hobby.class);
-            List<Hobby> list = q.getResultList();
-            System.out.println("SIZE OF HOBBY LIST: " + list.size());
-            for(Hobby h : list) {
-                System.out.println(h.getName());
-            }
-        
-        
-        
         Person actual = em.find(Person.class, personId);
-        if(actual != null) {
-            System.out.println(actual.getFirstName());
-            if(actual.getHobbyList() != null) {
-                System.out.println("HOBBYLIST SIZE: " + actual.getHobbyList().size());
-                if(actual.getHobbyList().get(0) != null) {
-                    System.out.println(actual.getHobbyList().get(0).getName());
-                }else {
-                    System.out.println("HOBBY 0 IS NULL");
-                }
-            }else {
-                System.out.println("PERSON HOBBYLIST IS NULL");
-            }
-        } else {
-            System.out.println("PERSON IS NULL");
-        }
         
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
         assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
