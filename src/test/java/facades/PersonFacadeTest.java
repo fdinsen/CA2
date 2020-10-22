@@ -1,19 +1,18 @@
 package facades;
 
-import dto.HobbyDTO;
 import entities.Cityinfo;
 import entities.Address;
 import entities.Person;
 import dto.PersonDTO;
 import entities.Hobby;
 import exceptions.HobbyNotFound;
+import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
-import java.util.List;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -151,13 +150,13 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void getPersonByPhone() {
+    public void getPersonById() throws PersonNotFound {
 
         String expected = p1.getFirstName();
         String exCity = p1.getAddress().getZipcode().getCity();
         String exStreet = p1.getAddress().getStreet();
 
-        PersonDTO p = facade.getPersonByPhone(p1.getPhone());
+        PersonDTO p = facade.getPersonById(p1.getId());
 
         String actual = p.getFirstName();
         String actualCity = p.getCity();
@@ -170,7 +169,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testCreatePerson() {
+    public void testCreatePerson() throws MalformedRequest {
         //Arrange
         EntityManager em = emf.createEntityManager();
         int phone = 98127634;
@@ -188,22 +187,22 @@ public class PersonFacadeTest {
         PersonDTO dto = new PersonDTO(personToCreate);
 
         //Act
-        facade.createPerson(dto);
+        dto = facade.createPerson(dto);
 
         //PersonDTO actual = facade.getPersonByPhone(phone);
-        Person actual = em.find(Person.class, phone);
+        Person actual = em.find(Person.class, dto.getId());
 
         //Assert
         assertEquals(dto.getEmail(), actual.getEmail());
     }
-
+    
     @Test
-    public void getPersonByPhoneError() {
+    public void getPersonByIdError() {
 
-        NoResultException assertThrows;
+        PersonNotFound assertThrows;
 
-        assertThrows = Assertions.assertThrows(NoResultException.class, () -> {
-            facade.getPersonByPhone(0);
+        assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPersonById(0);
         });
         Assertions.assertNotNull(assertThrows);
     }
@@ -211,7 +210,7 @@ public class PersonFacadeTest {
     @Test
     public void testAddHobbyToPersonNonExistentHobby() {
         //Arrange
-        int personId = p1.getPhone();
+        int personId = p1.getId();
         String hobbyName = h1.getName();
         HobbyNotFound assertThrows;
         
@@ -225,7 +224,7 @@ public class PersonFacadeTest {
     @Test
     public void testAddHobbyToPersonNonExistentPerson() {
         //Arrange
-        int personId = p1.getPhone();
+        int personId = p1.getId();
         String hobbyName = h1.getName();
         PersonNotFound assertThrows;
         
@@ -239,7 +238,7 @@ public class PersonFacadeTest {
     @Test
     public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound {
         //Arrange
-        int personId = p1.getPhone();
+        int personId = p1.getId();
         String hobbyName = h1.getName();
         
         //Act
@@ -255,7 +254,7 @@ public class PersonFacadeTest {
     public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getPhone();
+        int personId = p2.getId();
         String hobbyName = h2.getName();
         int expectedHobbyAmount = 1;
         
@@ -273,7 +272,7 @@ public class PersonFacadeTest {
     public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getPhone();
+        int personId = p2.getId();
         String hobbyName = h2.getName();
         String hobbyName2 = h3.getName();
         int expectedHobbyAmount = 2;
