@@ -75,6 +75,9 @@ Taiga Sprint Backlog: https://tree.taiga.io/project/rodedrengen-ca2/backlog
 <li>CORS</li>
 <ul><li>Simon</li></ul>
 
+<li>Delete person</li>
+<ul><li>Simon</li></ul>
+
 <li>Diverse Server-deployment problemer</li>
 <ul><li>Frederik</li></ul>
 
