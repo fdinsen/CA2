@@ -83,7 +83,7 @@ public class PersonResourceTest {
 
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
-                        
+
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -106,7 +106,7 @@ public class PersonResourceTest {
                 em.persist(h2);
                 em.persist(h3);
                 em.persist(h4);
-            }else {
+            } else {
                 h1 = em.find(Hobby.class, "Dans");
                 h2 = em.find(Hobby.class, "Skuespil");
                 h3 = em.find(Hobby.class, "Brætspil");
@@ -180,7 +180,7 @@ public class PersonResourceTest {
 
     @Test
     public void testGetPersonError() {
-        given().when().get("person/0").then().statusCode(500);
+        given().when().get("person/0").then().statusCode(404);
     }
 
     @Test
@@ -249,5 +249,28 @@ public class PersonResourceTest {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
+    }
+
+    @Test
+    public void testeDeletePerson() {
+
+        given()
+                .contentType("application/json")
+                .delete("person/" + p1.getPhone())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("msg", equalTo("person deleted"));
+    }
+     @Test
+    public void testeDeletePersonWithNoPerson() {
+        int phone = 11111111;
+        given()
+                .contentType("application/json")
+                .delete("person/" + phone)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("message", equalTo("No person found by id " + phone));
     }
 }
