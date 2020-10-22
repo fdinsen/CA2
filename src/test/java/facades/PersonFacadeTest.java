@@ -8,10 +8,12 @@ import dto.PersonDTO;
 import entities.Hobby;
 import exceptions.HobbyNotFound;
 import exceptions.PersonNotFound;
+import java.util.List;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import javax.persistence.TypedQuery;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -133,6 +135,13 @@ public class PersonFacadeTest {
             em.persist(p4);
             
             em.getTransaction().commit();
+            
+            TypedQuery<Person> q = em.createQuery("SELECT p FROM Person p" ,Person.class);
+            List<Person> list = q.getResultList();
+            System.out.println("SIZE OF PERSON LIST: " + list.size());
+            for(Person p : list) {
+                System.out.println(p.getFirstName());
+            }
         } finally {
             em.close();
         }
