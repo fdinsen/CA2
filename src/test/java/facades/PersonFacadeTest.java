@@ -299,7 +299,7 @@ public class PersonFacadeTest {
         PersonDTO pdto = facade.deletePerson(p1.getPhone());
 
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
-            facade.getPersonByPhone(p1.getPhone());
+            facade.getPersonById(p1.getId());
         });
     }
 
@@ -309,7 +309,7 @@ public class PersonFacadeTest {
         PersonNotFound assertThrows;
         
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
-            facade.getPersonByPhone(0);
+            facade.getPersonById(0);
         });
 
     }
