@@ -290,4 +290,27 @@ public class PersonFacadeTest {
         assertEquals(h3.getName(), actual.getHobbyList().get(1).getName());
         assertEquals(h3.getCategory(), actual.getHobbyList().get(1).getCategory());
     }
+    
+    @Test
+    public void testDeletePerson() throws NoResultException, PersonNotFound {
+
+        PersonNotFound assertThrows;
+
+        PersonDTO pdto = facade.deletePerson(p1.getId());
+
+        assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPersonById(p1.getId());
+        });
+    }
+
+    @Test
+    public void testDeletePersonError() throws PersonNotFound {
+
+        PersonNotFound assertThrows;
+        
+        assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPersonById(0);
+        });
+
+    }
 }

@@ -250,4 +250,27 @@ public class PersonResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
+    
+    @Test
+    public void testeDeletePerson() {
+
+        given()
+                .contentType("application/json")
+                .delete("person/" + p1.getId())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("msg", equalTo("person deleted"));
+    }
+     @Test
+    public void testeDeletePersonWithNoPerson() {
+        int phone = 11111111;
+        given()
+                .contentType("application/json")
+                .delete("person/" + phone)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+                .body("message", equalTo("No person found by id " + phone));
+    }
 }

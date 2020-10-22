@@ -117,4 +117,27 @@ public class PersonFacade {
             em.close();
         }
     }
+    
+    public PersonDTO deletePerson(int phone) throws PersonNotFound {
+
+        EntityManager em = getEntityManager();
+        Person person;
+
+        try {
+            em.getTransaction().begin();
+
+            person = em.find(Person.class, phone);
+
+            em.remove(person);
+
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new PersonNotFound("No person found by id " + phone);
+        } finally {
+            em.close();
+        }
+
+        return new PersonDTO(person);
+    }
 }
