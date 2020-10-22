@@ -2,8 +2,6 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
-import dto.HobbyDTO;
 import dto.PersonDTO;
 import exceptions.HobbyNotFound;
 import exceptions.PersonNotFound;
@@ -33,12 +31,12 @@ public class PersonResource {
         return "message: \"Hello, World\"";
     }
 
-    @Path("/{phone}")
+    @Path("/{id}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public String getById(@PathParam("phone") int phone) {
+    public String getById(@PathParam("id") int id) throws PersonNotFound {
 
-        PersonDTO personDTO = FACADE.getPersonByPhone(phone);
+        PersonDTO personDTO = FACADE.getPersonById(id);
 
         return new Gson().toJson(personDTO);
     }

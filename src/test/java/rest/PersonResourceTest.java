@@ -170,7 +170,7 @@ public class PersonResourceTest {
     @Test
     public void testGetPersonByPerson() {
         given()
-                .get("/person/" + p1.getPhone())
+                .get("/person/" + p1.getId())
                 .then()
                 .assertThat()
                 .body("firstName", equalTo(p1.getFirstName()))
@@ -180,7 +180,7 @@ public class PersonResourceTest {
 
     @Test
     public void testGetPersonError() {
-        given().when().get("person/0").then().statusCode(500);
+        given().when().get("person/0").then().statusCode(404);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class PersonResourceTest {
     @Test
     public void testAddHobbyToPerson() {
         String hobbyName = "Dans";
-        int personId = p1.getPhone();
+        int personId = p1.getId();
 
         given()
                 .contentType("application/json")
@@ -228,7 +228,7 @@ public class PersonResourceTest {
     @Test
     public void testAddHobbyToPersonNonExistentPerson() {
         String hobbyName = "Dans";
-        int personId = 1;
+        int personId = 1374917591;
 
         given()
                 .contentType("application/json")
@@ -241,7 +241,7 @@ public class PersonResourceTest {
     @Test
     public void testAddHobbyToPersonNonExistentHobby() {
         String hobbyName = "Pastamaking";
-        int personId = p1.getPhone();
+        int personId = p1.getId();
 
         given()
                 .contentType("application/json")

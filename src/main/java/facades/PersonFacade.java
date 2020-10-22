@@ -4,16 +4,15 @@ import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.Person;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
+
 import dto.PersonDTO;
 import entities.Person;
 import entities.Address;
 import entities.Cityinfo;
 import entities.Hobby;
 import exceptions.HobbyNotFound;
+import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
 
 /**
@@ -46,22 +45,26 @@ public class PersonFacade {
         return emf.createEntityManager();
     }
     
-    public PersonDTO getPersonByPhone(int phone){
+    public PersonDTO getPersonById(int id) throws PersonNotFound {
         
         EntityManager em = emf.createEntityManager();
         
-        TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p WHERE p.phone = :phone",Person.class);
+        TypedQuery<Person> query = em.createQuery("SELECT p FROM Person p WHERE p.id = :id",Person.class);
         
-        query.setParameter("phone", phone);
-        
-        Person p = query.getSingleResult();
-        
-        return new PersonDTO(p);
+        query.setParameter("id", id);
+
+        try {
+            Person p = query.getSingleResult();
+            return new PersonDTO(p);
+        }catch (NoResultException ex) {
+            throw new PersonNotFound("No person found by id " + id);
+        }
+
     }
    
    
     
-    public PersonDTO createPerson(PersonDTO personToCreate) {
+    public PersonDTO createPerson(PersonDTO personToCreate) throws MalformedRequest {
         EntityManager em = getEntityManager();
         try {
             Person person = new Person(
@@ -80,7 +83,10 @@ public class PersonFacade {
             em.persist(person);
             em.getTransaction().commit();
             
+            personToCreate.setId(person.getId());
             return personToCreate;
+        }catch(Exception ex){
+            throw new MalformedRequest("Error, person must contain phone, email, first name, last name, street and zipcode");
         }finally {
             em.close();
         }

@@ -16,6 +16,7 @@ import java.util.List;
  */
 public class PersonDTO {
 
+    private int id;
     private int phone;
     private String email;
     private String firstName;
@@ -26,6 +27,9 @@ public class PersonDTO {
     private String city;
 
     public PersonDTO(Person person) {
+        if(person.getId() != null) {
+            this.id = person.getId();
+        }
         this.phone = person.getPhone();
         this.email = person.getEmail();
         this.firstName = person.getFirstName();
@@ -57,6 +61,25 @@ public class PersonDTO {
         this.zipcode = zipcode;
         city = null;
         hobbies = new ArrayList();
+    }
+    public PersonDTO(int id, int phone, String email, String firstName, String lastName, String street, String zipcode) {
+        this.id = id;
+        this.phone = phone;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.street = street;
+        this.zipcode = zipcode;
+        city = null;
+        hobbies = new ArrayList();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getPhone() {
