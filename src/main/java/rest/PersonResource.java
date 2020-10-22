@@ -16,6 +16,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -36,7 +37,7 @@ public class PersonResource {
     @Path("/{phone}")
     @GET
     @Produces({MediaType.APPLICATION_JSON})
-    public String getById(@PathParam("phone") int phone) {
+    public String getById(@PathParam("phone") int phone) throws PersonNotFound {
 
         PersonDTO personDTO = FACADE.getPersonByPhone(phone);
 
@@ -53,7 +54,7 @@ public class PersonResource {
         return Response.ok().entity(GSON.toJson(createdPerson)).build();
 
     }
-    
+
     @Path("{pid}/hobby/{hname}")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,5 +64,16 @@ public class PersonResource {
             @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound {
         PersonDTO hobby = FACADE.addHobbyToPerson(pid, hobbyName);
         return Response.ok().entity(GSON.toJson(hobby)).build();
+    }
+
+    @Path("/{phone}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deletePerson(@PathParam("phone") int phone) throws PersonNotFound {
+        
+        PersonDTO pDTO = FACADE.deletePerson(phone);
+        
+        return "{\"status\" :\"200\", \"msg\": \"person deleted\"}" ;
+
     }
 }
