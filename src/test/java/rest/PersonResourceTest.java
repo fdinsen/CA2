@@ -83,6 +83,8 @@ public class PersonResourceTest {
 
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
+                        System.out.println("hTest in resourcetest: " + hTest);
+                        
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");

@@ -60,6 +60,7 @@ public class PersonFacadeTest {
             em.getTransaction().begin();
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
+            System.out.println("hTest in facadetest: " + hTest);
             
             if (test == null) {
 
@@ -207,6 +208,7 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(NoResultException.class, () -> {
             facade.getPersonByPhone(0);
         });
+        Assertions.assertNotNull(assertThrows);
     }
     
     //@Test
