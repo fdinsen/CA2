@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import dto.PersonDTO;
 import exceptions.HobbyNotFound;
+import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
 import utils.EMF_Creator;
 import facades.PersonFacade;
@@ -44,7 +45,7 @@ public class PersonResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createPerson(String person) {
+    public Response createPerson(String person) throws MalformedRequest {
 
         PersonDTO personToCreate = GSON.fromJson(person, PersonDTO.class);
         PersonDTO createdPerson = FACADE.createPerson(personToCreate);
