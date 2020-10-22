@@ -63,12 +63,29 @@ Taiga Sprint Backlog: https://tree.taiga.io/project/rodedrengen-ca2/backlog
 <li>Add Person</li>
 <ul><li>Frederik</li></ul>
 
+<li>Add Hobby to Person</li>
+<ul><li>Frederik</li></ul>
+
 <li>Get Person</li>
 <ul><li>Simon</li></ul>
 
+<li>Front-end færdigt</li>
+<ul><li>Oliver</li></ul>
+
+<li>CORS</li>
+<ul><li>Simon</li></ul>
+
+<li>Diverse Server-deployment problemer</li>
+<ul><li>Frederik</li></ul>
+
+<li>Skiftet fra phone til id som primær Person nøgle</li>
+<ul><li>Frederik</li></ul>
+
 </ul>
 <li>What did your team accomplish during this sprint?</li>
-<ul><li>N/A</li></ul>
+<ul><li>Front-end og Back-end er deployet og kommuniker sammen</li></ul>
+<ul><li>Person og Hobby systemet kører</li></ul>
+<ul><li>Refaktoreret nogle dårlige designbeslutninger</li></ul>
 </ul>
 
 <h3>Third Period:</h3>
