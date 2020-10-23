@@ -80,4 +80,14 @@ public class PersonResource {
         return "{\"status\" :\"200\", \"msg\": \"person deleted\"}" ;
 
     }
+    @Path("/hobby/{hid}/count")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String getHobbyCount(@PathParam("hid") String hobbyId) throws HobbyNotFound{
+        System.out.println(hobbyId);
+        int count = FACADE.getCountOfPeopleWithHobby(hobbyId);
+        
+        return "{\"count\":"+count+"}";
+    }
 }
