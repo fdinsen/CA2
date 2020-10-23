@@ -116,7 +116,7 @@ public class PersonFacade {
         }
     }
 
-    public PersonDTO deletePerson(int phone) throws PersonNotFound {
+    public PersonDTO deletePerson(int id) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
         Person person;
@@ -124,13 +124,13 @@ public class PersonFacade {
         try {
             em.getTransaction().begin();
 
-            person = em.find(Person.class, phone);
+            person = em.find(Person.class, id);
 
             em.remove(person);
 
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new PersonNotFound("No person found by id " + phone);
+            throw new PersonNotFound("No person found by id " + id);
         } finally {
             em.close();
         }
