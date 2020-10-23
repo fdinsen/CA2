@@ -19,10 +19,11 @@ import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 //Uncomment the line below, to temporarily disable this test
-//@Disabled
+////@Disabled
 public class PersonFacadeTest {
 
     private static EntityManagerFactory emf;
@@ -32,6 +33,7 @@ public class PersonFacadeTest {
     Person p2;
     Person p3;
     Person p4;
+    Person p5;
 
     Address a1;
 
@@ -42,7 +44,7 @@ public class PersonFacadeTest {
     Cityinfo c1;
     Cityinfo c2;
     Cityinfo c3;
-    
+
     public static Hobby h1, h2, h3, h4;
 
     public PersonFacadeTest() {
@@ -59,7 +61,7 @@ public class PersonFacadeTest {
             em.getTransaction().begin();
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
-            
+
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -70,20 +72,20 @@ public class PersonFacadeTest {
                 em.persist(c);
                 em.persist(c1);
                 em.persist(c2);
-                em.persist(c3);   
+                em.persist(c3);
             }
-            
-            if(hTest == null) {
+
+            if (hTest == null) {
                 h1 = new Hobby("Dans", "https://en.wikipedia.org/wiki/Dance", "Generel", "Indendørs");
                 h2 = new Hobby("Skuespil", "https://en.wikipedia.org/wiki/Acting", "Generel", "Indendørs");
                 h3 = new Hobby("Brætspil", "https://en.wikipedia.org/wiki/Board_game", "Generel", "Indendørs");
                 h4 = new Hobby("Spil", "https://en.wikipedia.org/wiki/Games", "Generel", "Indendørs");
-                
+
                 em.persist(h1);
                 em.persist(h2);
                 em.persist(h3);
                 em.persist(h4);
-            }else {
+            } else {
                 h1 = em.find(Hobby.class, "Dans");
                 h2 = em.find(Hobby.class, "Skuespil");
                 h3 = em.find(Hobby.class, "Brætspil");
@@ -106,16 +108,6 @@ public class PersonFacadeTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
 
-        p1 = new Person(12345678, "mail", "navn", "andetNavn");
-        p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
-        p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
-        p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
-
-        Address a1 = new Address(1, "vej vej");
-        a1.setAdditionalInfo("");
-        a1.setZipcode(new Cityinfo("3400", "Hillerod"));
-        p1.setAddress(a1);
-
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Person.deleteFrom").executeUpdate();
@@ -124,6 +116,21 @@ public class PersonFacadeTest {
             p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
             p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
             p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
+            p5 = new Person(45678901, "mail4", "navn4", "andetNavn4");
+
+            h1 = em.find(Hobby.class, "Dans");
+            h2 = em.find(Hobby.class, "Skuespil");
+            h3 = em.find(Hobby.class, "Brætspil");
+            h4 = em.find(Hobby.class, "Spil");
+
+            p1.addHobby(h1);
+            p2.addHobby(h1);
+            p3.addHobby(h1);
+            p4.addHobby(h1);
+
+            p1.addHobby(h2);
+            p2.addHobby(h2);
+            p3.addHobby(h2);
 
             Cityinfo c4 = em.find(Cityinfo.class, "3400");
 
@@ -137,7 +144,8 @@ public class PersonFacadeTest {
             em.persist(p2);
             em.persist(p3);
             em.persist(p4);
-            
+            em.persist(p5);
+
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -149,6 +157,7 @@ public class PersonFacadeTest {
 //        Remove any data after each test was run
     }
 
+    //@Disabled
     @Test
     public void getPersonById() throws PersonNotFound {
 
@@ -168,6 +177,7 @@ public class PersonFacadeTest {
 
     }
 
+    //@Disabled
     @Test
     public void testCreatePerson() throws MalformedRequest {
         //Arrange
@@ -179,7 +189,7 @@ public class PersonFacadeTest {
         Address addressToCreate = new Address(
                 "Espegaardsvej 20");
         Cityinfo city = em.find(Cityinfo.class, "3360");
-        if(city == null) {
+        if (city == null) {
             city = new Cityinfo("3360", "Liseleje");
         }
         addressToCreate.setZipcode(city);
@@ -195,7 +205,8 @@ public class PersonFacadeTest {
         //Assert
         assertEquals(dto.getEmail(), actual.getEmail());
     }
-    
+
+    //@Disabled
     @Test
     public void getPersonByIdError() {
 
@@ -206,91 +217,97 @@ public class PersonFacadeTest {
         });
         Assertions.assertNotNull(assertThrows);
     }
-    
+
+    //@Disabled
     @Test
     public void testAddHobbyToPersonNonExistentHobby() {
         //Arrange
         int personId = p1.getId();
         String hobbyName = h1.getName();
         HobbyNotFound assertThrows;
-        
+
         //Act
         assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
             facade.addHobbyToPerson(personId, "fake hobby");
         });
         Assertions.assertNotNull(assertThrows);
     }
-    
+
+    //@Disabled
     @Test
     public void testAddHobbyToPersonNonExistentPerson() {
         //Arrange
         int personId = p1.getId();
         String hobbyName = h1.getName();
         PersonNotFound assertThrows;
-        
+
         //Act
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.addHobbyToPerson(1, hobbyName);
         });
         Assertions.assertNotNull(assertThrows);
     }
-    
+
+    //@Disabled
     @Test
     public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound {
         //Arrange
-        int personId = p1.getId();
-        String hobbyName = h1.getName();
-        
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
+
         //Act
         PersonDTO actual = facade.addHobbyToPerson(personId, hobbyName);
-        
-        assertEquals(h1.getType(), actual.getHobbies().get(0).getType());
-        assertEquals(h1.getName(), actual.getHobbies().get(0).getName());
-        assertEquals(h1.getCategory(), actual.getHobbies().get(0).getCategory());
-        assertEquals(h1.getWikilink(), actual.getHobbies().get(0).getWikilink());
+
+        assertEquals(h4.getType(), actual.getHobbies().get(0).getType());
+        assertEquals(h4.getName(), actual.getHobbies().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbies().get(0).getCategory());
+        assertEquals(h4.getWikilink(), actual.getHobbies().get(0).getWikilink());
     }
-    
+
+    //@Disabled
     @Test
     public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getId();
-        String hobbyName = h2.getName();
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
         int expectedHobbyAmount = 1;
-        
+
         //Act
         facade.addHobbyToPerson(personId, hobbyName);
-        
+
         Person actual = em.find(Person.class, personId);
-        
+
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
-        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
-        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
+        assertEquals(h4.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbyList().get(0).getCategory());
     }
-    
+
+    //@Disabled
     @Test
     public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getId();
-        String hobbyName = h2.getName();
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
         String hobbyName2 = h3.getName();
         int expectedHobbyAmount = 2;
-        
+
         //Act
         facade.addHobbyToPerson(personId, hobbyName);
         facade.addHobbyToPerson(personId, hobbyName2);
-        
+
         Person actual = em.find(Person.class, personId);
-        
+
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
-        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
-        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
-        
+        assertEquals(h4.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbyList().get(0).getCategory());
+
         assertEquals(h3.getName(), actual.getHobbyList().get(1).getName());
         assertEquals(h3.getCategory(), actual.getHobbyList().get(1).getCategory());
     }
-    
+
+    //@Disabled
     @Test
     public void testDeletePerson() throws NoResultException, PersonNotFound {
 
@@ -303,14 +320,28 @@ public class PersonFacadeTest {
         });
     }
 
+    //@Disabled
     @Test
     public void testDeletePersonError() throws PersonNotFound {
 
         PersonNotFound assertThrows;
-        
+
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPersonById(0);
         });
+
+    }
+
+    @Test
+    public void TestgetCountOfHobby() throws HobbyNotFound {
+
+        System.out.println(p1.getHobbyList());
+        int exSize = 4;
+
+        int acSize = facade.getCountOfPeopleWithHobby(h1.getName());
+
+        System.out.println(acSize);
+        assertEquals(exSize, acSize);
 
     }
 }
