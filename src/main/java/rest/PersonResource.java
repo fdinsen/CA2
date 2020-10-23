@@ -70,16 +70,27 @@ public class PersonResource {
         return Response.ok().entity(GSON.toJson(hobby)).build();
     }
     
-    @Path("/{phone}")
+    @Path("/{id}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public String deletePerson(@PathParam("phone") int phone) throws PersonNotFound {
+    public String deletePerson(@PathParam("id") int id) throws PersonNotFound {
         
-        PersonDTO pDTO = FACADE.deletePerson(phone);
+        PersonDTO pDTO = FACADE.deletePerson(id);
         
         return "{\"status\" :\"200\", \"msg\": \"person deleted\"}" ;
 
     }
+    
+    @Path("{pid}/hobby/{hname}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public String removeHobbyFromPerson(
+            @PathParam("pid") int personId, 
+            @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound {
+        FACADE.removeHobbyFromPerson(personId, hobbyName);
+        return "{msg: \"hobby deleted from person\"}";
+    }
+  
     @Path("/hobby/{hid}/count")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
