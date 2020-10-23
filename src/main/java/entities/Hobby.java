@@ -64,7 +64,7 @@ public class Hobby implements Serializable {
     @JoinTable(name = "person_to_hobby", joinColumns = {
         @JoinColumn(name = "h_name", referencedColumnName = "name")}, inverseJoinColumns = {
         @JoinColumn(name = "p_id", referencedColumnName = "p_id")})
-    @ManyToMany( cascade = CascadeType.PERSIST)
+    @ManyToMany
     private List<Person> personList = new ArrayList();
 
     public Hobby() {

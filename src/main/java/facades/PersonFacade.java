@@ -141,13 +141,13 @@ public class PersonFacade {
     public int getCountOfPeopleWithHobby(String hobbyId) throws HobbyNotFound {
         EntityManager em = null;
 
-        int size = 0;
+        int size = -1;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
 
             Query query = em.createQuery("SELECT count(p) FROM Person p join p.hobbyList u where u.name = :name");
-
+            
             query.setParameter("name", hobbyId);
 
             Long temp = (long) query.getSingleResult();

@@ -70,7 +70,7 @@ public class Person implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "lastName")
     private String lastName;
-    @ManyToMany(mappedBy = "personList")
+    @ManyToMany(mappedBy = "personList",cascade = CascadeType.PERSIST)
     private List<Hobby> hobbyList = new ArrayList();
     @JoinColumn(name = "a_id", referencedColumnName = "a_id")
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
