@@ -151,12 +151,17 @@ public class Person implements Serializable {
     
     public boolean removeHobby(String hobbyName) {
         boolean removed = false;
+        Hobby hobbyToRemove = null;
         for(Hobby hobby : hobbyList) {
             if(hobby.getName().equals(hobbyName)) {
-                hobbyList.remove(hobby);
+                hobbyToRemove = hobby;
                 removed = true;
             }
         }
+        if(hobbyToRemove != null) {
+            hobbyList.remove(hobbyToRemove);
+        }
+        
         return removed;
     }
 

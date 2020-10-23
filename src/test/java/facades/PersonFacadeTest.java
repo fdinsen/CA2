@@ -17,6 +17,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -346,8 +347,45 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testDeleteHobbyFromPerson() {
+    public void testDeleteSingleHobbyFromPerson() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        int personId = p4.getId();
+        String hobbyName = h3.getName();
+        EntityManager em = emf.createEntityManager();
+        facade.addHobbyToPerson(personId, hobbyName);
+        int expSize = 1;
+        
+        //Act
+        facade.removeHobbyFromPerson(personId, hobbyName);
+        Person personAfter = em.find(Person.class, p4.getId());
         
 
+        assertEquals(expSize, personAfter.getHobbyList().size());
+    }
+    
+    @Test
+    public void testDeleteNonExistentHobbyFromPerson() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        int personId = p4.getId();
+        String hobbyName = "Pastamaking";
+        
+        HobbyNotFound assertThrows;
+        assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
+            facade.removeHobbyFromPerson(personId, hobbyName);
+        });
+        assertNotNull(assertThrows);
+    }
+    
+        @Test
+    public void testDeleteHobbyFromNonExistentPerson() throws HobbyNotFound, PersonNotFound {
+        //Arrange
+        int personId = 1456;
+        String hobbyName = h3.getName();
+        
+        PersonNotFound assertThrows;
+        assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.removeHobbyFromPerson(personId, hobbyName);
+        });
+        assertNotNull(assertThrows);
     }
 }
