@@ -11,13 +11,7 @@ import exceptions.ZipcodeNotFound;
 import utils.EMF_Creator;
 import facades.PersonFacade;
 import javax.persistence.EntityManagerFactory;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -122,5 +116,20 @@ public class PersonResource {
         List<PersonDTO> persons = FACADE.getPeopleWithSameHobby(hobby);
 
         return new Gson().toJson(persons);
+    }
+
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updatePerson(String person) throws MalformedRequest, PersonNotFound, ZipcodeNotFound {
+        try {
+            PersonDTO personToUpdate = GSON.fromJson(person, PersonDTO.class);
+            PersonDTO updatedPerson = FACADE.updatePerson(personToUpdate);
+            return Response.ok().entity(GSON.toJson(updatedPerson)).build();
+        }catch (JsonSyntaxException ex) {
+            throw new MalformedRequest("Error, person must contain phone, email, first name, last name, street and zipcode");
+        }
+
+
     }
 }

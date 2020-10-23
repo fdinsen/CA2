@@ -269,4 +269,53 @@ public class PersonFacade {
 
         return resPersons;
     }
+
+
+    public PersonDTO updatePerson(PersonDTO updatedPerson) throws MalformedRequest, PersonNotFound, ZipcodeNotFound {
+        EntityManager em = null;
+        Person person = null;
+        try {
+            em = getEntityManager();
+            person = em.find(Person.class, updatedPerson.getPid());
+            if(person == null)  throw new PersonNotFound("No person found with id: " + updatedPerson.getPid());
+        } catch (Exception e) {
+            throw new PersonNotFound("No person found with id: " + updatedPerson.getPid());
+        } finally {
+            em.close();
+        }
+
+        Cityinfo cityinfo = null;
+        try {
+            em = getEntityManager();
+            cityinfo = em.find(Cityinfo.class, updatedPerson.getZipcode());
+            if(cityinfo == null)  throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + updatedPerson.getZipcode());
+        } catch (Exception e) {
+            throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + updatedPerson.getZipcode());
+        } finally {
+            em.close();
+        }
+
+        Address address = new Address(updatedPerson.getStreet());
+        address.setZipcode(cityinfo);
+
+        try {
+            em = getEntityManager();
+
+            person.setFirstName(updatedPerson.getFirstName());
+            person.setLastName(updatedPerson.getLastName());
+            person.setEmail(updatedPerson.getEmail());
+            person.setAddress(address);
+            person.setPhone(updatedPerson.getPhone());
+
+            em.getTransaction().begin();
+            em.merge(person);
+            em.getTransaction().commit();
+
+            return new PersonDTO(person);
+        } catch (Exception ex) {
+            throw new MalformedRequest("Error, person must contain phone, email, first name, last name, street and zipcode");
+        } finally {
+            em.close();
+        }
+    }
 }
