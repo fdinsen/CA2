@@ -318,6 +318,9 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPersonById(p1.getId());
         });
+
+        Assertions.assertNotNull(assertThrows);
+        Assertions.assertNotNull(pdto);
     }
 
     //@Disabled
@@ -329,19 +332,27 @@ public class PersonFacadeTest {
         assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPersonById(0);
         });
-
+        Assertions.assertNotNull(assertThrows);
     }
 
     @Test
     public void TestgetCountOfHobby() throws HobbyNotFound {
 
-        System.out.println(p1.getHobbyList());
         int exSize = 4;
 
         int acSize = facade.getCountOfPeopleWithHobby(h1.getName());
 
-        System.out.println(acSize);
         assertEquals(exSize, acSize);
 
+    }
+
+    @Test
+    public void testGetCountOfHobbyZero() throws HobbyNotFound {
+
+        int exSize = 0;
+
+        int acSize = facade.getCountOfPeopleWithHobby("4kjfdkjfkjb");
+
+        assertEquals(exSize, acSize);
     }
 }
