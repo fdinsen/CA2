@@ -282,14 +282,57 @@ public class PersonResourceTest {
 
     @Test
     public void testeDeletePersonWithNoPerson() {
-        int phone = 11111111;
+        int id = 11111111;
         given()
                 .contentType("application/json")
-                .delete("person/" + phone)
+                .delete("person/" + id)
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
-                .body("message", equalTo("No person found by id " + phone));
+                .body("message", equalTo("No person found by id " + id));
+    }
+    
+    @Test
+    public void testRemoveHobbyFromPerson() {
+        int personId = p1.getId();
+        String hobbyName = h1.getName();
+        given()
+                .contentType("application/json")
+                .post("person/" + personId + "/hobby/" + hobbyName);
+                
+                
+        given()
+            .contentType("application/json")
+            .delete("person/" +personId+ "/hobby/"+hobbyName)
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode());
+    }
+    
+    @Test
+    public void testRemoveNonExistentHobbyFromPerson() {
+        int personId = p1.getId();
+        String hobbyName = "pastamaking";
+        given().
+            contentType("application/json")
+            .delete("person/" +personId+ "/hobby/"+hobbyName)
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+            .body("message", equalTo("No hobby found by name " + hobbyName + " on person with id: " + personId));
+    }
+    
+    @Test
+    public void testRemoveHobbyFromNonExistentPerson() {
+        int personId = 2132;
+        String hobbyName = h1.getName();
+        given().
+            contentType("application/json")
+            .delete("person/" +personId+ "/hobby/"+hobbyName)
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
+            .body("message", equalTo("No person found with id: " + personId));
     }
     @Test
     public void testGetHobbyCount(){

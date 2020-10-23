@@ -116,7 +116,7 @@ public class PersonFacade {
         }
     }
 
-    public PersonDTO deletePerson(int phone) throws PersonNotFound {
+    public PersonDTO deletePerson(int id) throws PersonNotFound {
 
         EntityManager em = getEntityManager();
         Person person;
@@ -124,19 +124,20 @@ public class PersonFacade {
         try {
             em.getTransaction().begin();
 
-            person = em.find(Person.class, phone);
+            person = em.find(Person.class, id);
 
             em.remove(person);
 
             em.getTransaction().commit();
         } catch (Exception e) {
-            throw new PersonNotFound("No person found by id " + phone);
+            throw new PersonNotFound("No person found by id " + id);
         } finally {
             em.close();
         }
 
         return new PersonDTO(person);
     }
+
 
     public int getCountOfPeopleWithHobby(String hobbyId) throws HobbyNotFound {
         EntityManager em = null;
@@ -161,5 +162,27 @@ public class PersonFacade {
         }
 
         return size;
+    }
+    
+    public void removeHobbyFromPerson(int personId, String hobbyName) throws HobbyNotFound, PersonNotFound {
+        boolean removedSuccessfully;
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            Person person = em.find(Person.class, personId);
+            if(person == null) {
+                throw new PersonNotFound("No person found with id: " + personId);
+            }
+            
+            removedSuccessfully = person.removeHobby(hobbyName);
+            if(!removedSuccessfully) {
+                throw new HobbyNotFound("No hobby found by name " + hobbyName + " on person with id: " + personId);
+            }
+            em.getTransaction().commit();
+            
+        }finally {
+            em.close();
+        }
+
     }
 }
