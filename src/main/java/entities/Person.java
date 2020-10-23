@@ -148,6 +148,17 @@ public class Person implements Serializable {
             hobby.addPersonToList(this);
         }
     }
+    
+    public boolean removeHobby(String hobbyName) {
+        boolean removed = false;
+        for(Hobby hobby : hobbyList) {
+            if(hobby.getName().equals(hobbyName)) {
+                hobbyList.remove(hobby);
+                removed = true;
+            }
+        }
+        return removed;
+    }
 
     public Address getAddress() {
         return address;

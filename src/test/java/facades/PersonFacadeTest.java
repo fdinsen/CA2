@@ -342,6 +342,12 @@ public class PersonFacadeTest {
 
         System.out.println(acSize);
         assertEquals(exSize, acSize);
+        
+    }
+    
+    @Test
+    public void testDeleteHobbyFromPerson() {
+        
 
     }
 }
