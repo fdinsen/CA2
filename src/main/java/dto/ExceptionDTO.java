@@ -10,28 +10,28 @@ package dto;
  * @author gamma
  */
 public class ExceptionDTO {
-    private int errorCode;
-    private String message;
+    private int status;
+    private String msg;
     
     public ExceptionDTO(int errorCode, String message) {
-        this.errorCode = errorCode;
-        this.message = message;
+        this.status = errorCode;
+        this.msg = message;
     }
 
     public int getErrorCode() {
-        return errorCode;
+        return status;
     }
 
     public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+        this.status = errorCode;
     }
 
     public String getMessage() {
-        return message;
+        return msg;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.msg = message;
     }
     
     

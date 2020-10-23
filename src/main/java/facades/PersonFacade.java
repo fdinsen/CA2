@@ -226,4 +226,47 @@ public class PersonFacade {
 
         return resPersons;
     }
+
+    public List<PersonDTO> getPeopleWithSameHobby(String hobbyName) throws PersonNotFound, HobbyNotFound {
+        EntityManager em = null;
+
+        Hobby hobby = null;
+        try {
+            em = getEntityManager();
+            hobby = em.find(Hobby.class, hobbyName);
+
+            if(hobby == null)  throw new HobbyNotFound("Hoppy not found with name: " + hobbyName);
+
+        } catch (Exception e) {
+            throw new HobbyNotFound("Hoppy not found with name: " + hobbyName);
+        } finally {
+            em.close();
+        }
+
+
+        List<PersonDTO> resPersons = new ArrayList<>();
+        try {
+            em = getEntityManager();
+
+            em.getTransaction().begin();
+            Query query = em.createQuery("SELECT p FROM Person p join p.hobbyList h where h = :hobby");
+
+            query.setParameter("hobby", hobby);
+
+            List<Person> persons = query.getResultList();
+
+            if(persons == null || persons.size() == 0)  throw new PersonNotFound("No persons found with hobby: " + hobbyName);
+
+            for (Person person: persons){
+                PersonDTO DTOtoReturn = new PersonDTO(person);
+                resPersons.add(DTOtoReturn);
+            }
+        } catch (Exception e) {
+            throw new PersonNotFound("No persons found with hobby: " + hobbyName);
+        } finally {
+            em.close();
+        }
+
+        return resPersons;
+    }
 }

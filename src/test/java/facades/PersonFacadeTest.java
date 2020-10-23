@@ -405,7 +405,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcode() throws PersonNotFound, ZipcodeNotFound {
+    public void testGetPeopleWithSameZipcode() throws PersonNotFound, ZipcodeNotFound {
         int expectedSize = 2;
 
         List<PersonDTO> persons = facade.getPeopleWithSameZipcode("3400");
@@ -415,7 +415,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcodeWrongZipcode() throws ZipcodeNotFound {
+    public void testGetPeopleWithSameZipcodeWrongZipcode() throws ZipcodeNotFound {
         ZipcodeNotFound assertThrows = Assertions.assertThrows(ZipcodeNotFound.class, () -> {
             facade.getPeopleWithSameZipcode("2");
         });
@@ -424,9 +424,37 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcodeCorrectZipCodeNoPeople() throws PersonNotFound {
+    public void testGetPeopleWithSameZipcodeCorrectZipCodeNoPeople() throws PersonNotFound {
         PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPeopleWithSameZipcode("3360");
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobby() throws PersonNotFound, HobbyNotFound {
+        int expectedSize = 3;
+
+        List<PersonDTO> persons = facade.getPeopleWithSameHobby(h2.getName());
+        int actualSize = persons.size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobbyWrongHobby() throws HobbyNotFound {
+        HobbyNotFound assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
+            facade.getPeopleWithSameHobby("NotFound");
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobbyZipCodeNoPeople() throws PersonNotFound {
+        PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPeopleWithSameHobby(h3.getName());
         });
 
         assertNotNull(assertThrows);

@@ -113,4 +113,14 @@ public class PersonResource {
 
         return new Gson().toJson(persons);
     }
+
+    @Path("/hobby/{hobby}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String getPersonsWithSameHobby(@PathParam("hobby") String hobby) throws PersonNotFound, HobbyNotFound {
+        List<PersonDTO> persons = FACADE.getPeopleWithSameHobby(hobby);
+
+        return new Gson().toJson(persons);
+    }
 }
