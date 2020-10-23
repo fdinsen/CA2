@@ -49,6 +49,7 @@ public class PersonResourceTest {
     Person p2;
     Person p3;
     Person p4;
+    Person p5;
 
     Address a1;
 
@@ -80,10 +81,9 @@ public class PersonResourceTest {
 
         try {
             em.getTransaction().begin();
-
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
-                        
+
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -96,6 +96,7 @@ public class PersonResourceTest {
                 em.persist(c2);
                 em.persist(c3);
             }
+
             if (hTest == null) {
                 h1 = new Hobby("Dans", "https://en.wikipedia.org/wiki/Dance", "Generel", "Indendørs");
                 h2 = new Hobby("Skuespil", "https://en.wikipedia.org/wiki/Acting", "Generel", "Indendørs");
@@ -106,7 +107,7 @@ public class PersonResourceTest {
                 em.persist(h2);
                 em.persist(h3);
                 em.persist(h4);
-            }else {
+            } else {
                 h1 = em.find(Hobby.class, "Dans");
                 h2 = em.find(Hobby.class, "Skuespil");
                 h3 = em.find(Hobby.class, "Brætspil");
@@ -141,6 +142,21 @@ public class PersonResourceTest {
             p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
             p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
             p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
+            p5 = new Person(45678901, "mail4", "navn4", "andetNavn4");
+
+            h1 = em.find(Hobby.class, "Dans");
+            h2 = em.find(Hobby.class, "Skuespil");
+            h3 = em.find(Hobby.class, "Brætspil");
+            h4 = em.find(Hobby.class, "Spil");
+
+            p1.addHobby(h4);
+            p2.addHobby(h1);
+            p3.addHobby(h1);
+            p4.addHobby(h1);
+
+            p1.addHobby(h2);
+            p2.addHobby(h2);
+            p3.addHobby(h2);
 
             Cityinfo c4 = em.find(Cityinfo.class, "3400");
 
@@ -154,6 +170,7 @@ public class PersonResourceTest {
             em.persist(p2);
             em.persist(p3);
             em.persist(p4);
+            em.persist(p5);
 
             em.getTransaction().commit();
         } finally {
@@ -213,8 +230,8 @@ public class PersonResourceTest {
 
     @Test
     public void testAddHobbyToPerson() {
-        String hobbyName = "Dans";
-        int personId = p1.getId();
+        String hobbyName = "Spil";
+        int personId = p5.getId();
 
         given()
                 .contentType("application/json")
@@ -250,7 +267,7 @@ public class PersonResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode());
     }
-    
+
     @Test
     public void testeDeletePerson() {
 
@@ -262,7 +279,8 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("msg", equalTo("person deleted"));
     }
-     @Test
+
+    @Test
     public void testeDeletePersonWithNoPerson() {
         int phone = 11111111;
         given()
@@ -272,5 +290,16 @@ public class PersonResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.NOT_FOUND_404.getStatusCode())
                 .body("message", equalTo("No person found by id " + phone));
+    }
+    @Test
+    public void testGetHobbyCount(){
+        String hobby = "Dans";
+        
+        given()
+                .get("person/hobby/"+hobby+"/count")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("count",equalTo(3));
     }
 }
