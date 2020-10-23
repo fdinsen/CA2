@@ -33,6 +33,7 @@ public class PersonFacadeTest {
     Person p2;
     Person p3;
     Person p4;
+    Person p5;
 
     Address a1;
 
@@ -115,6 +116,7 @@ public class PersonFacadeTest {
             p2 = new Person(23456789, "mail1", "navn1", "andetNavn1");
             p3 = new Person(34567890, "mail2", "navn2", "andetNavn2");
             p4 = new Person(45678901, "mail3", "navn3", "andetNavn3");
+            p5 = new Person(45678901, "mail4", "navn4", "andetNavn4");
 
             h1 = em.find(Hobby.class, "Dans");
             h2 = em.find(Hobby.class, "Skuespil");
@@ -142,6 +144,7 @@ public class PersonFacadeTest {
             em.persist(p2);
             em.persist(p3);
             em.persist(p4);
+            em.persist(p5);
 
             em.getTransaction().commit();
         } finally {
@@ -249,16 +252,16 @@ public class PersonFacadeTest {
     @Test
     public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound {
         //Arrange
-        int personId = p1.getId();
-        String hobbyName = h1.getName();
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
 
         //Act
         PersonDTO actual = facade.addHobbyToPerson(personId, hobbyName);
 
-        assertEquals(h1.getType(), actual.getHobbies().get(0).getType());
-        assertEquals(h1.getName(), actual.getHobbies().get(0).getName());
-        assertEquals(h1.getCategory(), actual.getHobbies().get(0).getCategory());
-        assertEquals(h1.getWikilink(), actual.getHobbies().get(0).getWikilink());
+        assertEquals(h4.getType(), actual.getHobbies().get(0).getType());
+        assertEquals(h4.getName(), actual.getHobbies().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbies().get(0).getCategory());
+        assertEquals(h4.getWikilink(), actual.getHobbies().get(0).getWikilink());
     }
 
     //@Disabled
@@ -266,8 +269,8 @@ public class PersonFacadeTest {
     public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getId();
-        String hobbyName = h2.getName();
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
         int expectedHobbyAmount = 1;
 
         //Act
@@ -276,8 +279,8 @@ public class PersonFacadeTest {
         Person actual = em.find(Person.class, personId);
 
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
-        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
-        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
+        assertEquals(h4.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbyList().get(0).getCategory());
     }
 
     //@Disabled
@@ -285,8 +288,8 @@ public class PersonFacadeTest {
     public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound {
         //Arrange
         EntityManager em = emf.createEntityManager();
-        int personId = p2.getId();
-        String hobbyName = h2.getName();
+        int personId = p5.getId();
+        String hobbyName = h4.getName();
         String hobbyName2 = h3.getName();
         int expectedHobbyAmount = 2;
 
@@ -297,8 +300,8 @@ public class PersonFacadeTest {
         Person actual = em.find(Person.class, personId);
 
         assertEquals(expectedHobbyAmount, actual.getHobbyList().size());
-        assertEquals(h2.getName(), actual.getHobbyList().get(0).getName());
-        assertEquals(h2.getCategory(), actual.getHobbyList().get(0).getCategory());
+        assertEquals(h4.getName(), actual.getHobbyList().get(0).getName());
+        assertEquals(h4.getCategory(), actual.getHobbyList().get(0).getCategory());
 
         assertEquals(h3.getName(), actual.getHobbyList().get(1).getName());
         assertEquals(h3.getCategory(), actual.getHobbyList().get(1).getCategory());
