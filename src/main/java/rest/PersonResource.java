@@ -7,6 +7,7 @@ import dto.PersonDTO;
 import exceptions.HobbyNotFound;
 import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
+import exceptions.ZipcodeNotFound;
 import utils.EMF_Creator;
 import facades.PersonFacade;
 import javax.persistence.EntityManagerFactory;
@@ -19,6 +20,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.List;
 
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("person")
@@ -100,5 +102,15 @@ public class PersonResource {
         int count = FACADE.getCountOfPeopleWithHobby(hobbyId);
         
         return "{\"count\":"+count+"}";
+    }
+
+    @Path("/city/{zipcode}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String getPersonsWithSameZipcode(@PathParam("zipcode") String zipcode) throws PersonNotFound, ZipcodeNotFound {
+        List<PersonDTO> persons = FACADE.getPeopleWithSameZipcode(zipcode);
+
+        return new Gson().toJson(persons);
     }
 }

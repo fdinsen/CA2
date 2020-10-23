@@ -35,6 +35,7 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
                 build();
     }
      private Response.StatusType getStatusType(Throwable ex) {
+
         if (ex instanceof WebApplicationException) {
             return((WebApplicationException)ex).getResponse().getStatusInfo();
         } 

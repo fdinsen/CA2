@@ -8,6 +8,7 @@ import entities.Hobby;
 import exceptions.HobbyNotFound;
 import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
+import exceptions.ZipcodeNotFound;
 import utils.EMF_Creator;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 //Uncomment the line below, to temporarily disable this test
 ////@Disabled
@@ -140,6 +143,7 @@ public class PersonFacadeTest {
             a1.setZipcode(c4);
 
             p1.setAddress(a1);
+            p2.setAddress(a1);
 
             em.persist(p1);
             em.persist(p2);
@@ -398,5 +402,33 @@ public class PersonFacadeTest {
         int acSize = facade.getCountOfPeopleWithHobby("4kjfdkjfkjb");
 
         assertEquals(exSize, acSize);
+    }
+
+    @Test
+    public void testgetPeopleWithSameZipcode() throws PersonNotFound, ZipcodeNotFound {
+        int expectedSize = 2;
+
+        List<PersonDTO> persons = facade.getPeopleWithSameZipcode("3400");
+        int actualSize = persons.size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testgetPeopleWithSameZipcodeWrongZipcode() throws ZipcodeNotFound {
+        ZipcodeNotFound assertThrows = Assertions.assertThrows(ZipcodeNotFound.class, () -> {
+            facade.getPeopleWithSameZipcode("2");
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testgetPeopleWithSameZipcodeCorrectZipCodeNoPeople() throws PersonNotFound {
+        PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPeopleWithSameZipcode("3360");
+        });
+
+        assertNotNull(assertThrows);
     }
 }
