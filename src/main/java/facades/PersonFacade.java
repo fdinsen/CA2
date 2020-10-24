@@ -1,19 +1,19 @@
 package facades;
 
-import dto.HobbyDTO;
 import dto.PersonDTO;
 import entities.Person;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-import dto.PersonDTO;
-import entities.Person;
 import entities.Address;
 import entities.Cityinfo;
 import entities.Hobby;
 import exceptions.HobbyNotFound;
 import exceptions.MalformedRequest;
 import exceptions.PersonNotFound;
+import exceptions.ZipcodeNotFound;
 
 /**
  *
@@ -184,5 +184,46 @@ public class PersonFacade {
             em.close();
         }
 
+    }
+
+    public List<PersonDTO> getPeopleWithSameZipcode(String zipcode) throws PersonNotFound, ZipcodeNotFound {
+        EntityManager em = null;
+
+        Cityinfo cityinfo = null;
+        try {
+            em = getEntityManager();
+            cityinfo = em.find(Cityinfo.class, zipcode);
+            if(cityinfo == null)  throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + zipcode);
+        } catch (Exception e) {
+            throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + zipcode);
+        } finally {
+            em.close();
+        }
+
+
+        List<PersonDTO> resPersons = new ArrayList<>();
+        try {
+            em = getEntityManager();
+
+            em.getTransaction().begin();
+            Query query = em.createQuery("SELECT p FROM Person p join p.address a where a.zipcode = :zipcode");
+
+            query.setParameter("zipcode", cityinfo);
+
+            List<Person> persons = query.getResultList();
+
+            if(cityinfo == null || persons.size() == 0)  throw new PersonNotFound("No persons found with zipcode: " + zipcode);
+
+            for (Person person: persons){
+                PersonDTO DTOtoReturn = new PersonDTO(person);
+                resPersons.add(DTOtoReturn);
+            }
+        } catch (Exception e) {
+            throw new PersonNotFound("No persons found with zipcode: " + zipcode);
+        } finally {
+            em.close();
+        }
+
+        return resPersons;
     }
 }

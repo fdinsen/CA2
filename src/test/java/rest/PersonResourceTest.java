@@ -13,11 +13,15 @@ import static facades.PersonFacadeTest.h3;
 import static facades.PersonFacadeTest.h4;
 import static facades.PersonFacadeTest.hTest;
 import static facades.PersonFacadeTest.test;
+
+import org.hamcrest.Matchers;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.parsing.Parser;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
@@ -129,7 +133,6 @@ public class PersonResourceTest {
     }
 
     // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
-    //TODO -- Make sure to change the EntityClass used below to use YOUR OWN (renamed) Entity class
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
@@ -165,6 +168,7 @@ public class PersonResourceTest {
             a1.setZipcode(c4);
 
             p1.setAddress(a1);
+            p2.setAddress(a1);
 
             em.persist(p1);
             em.persist(p2);
