@@ -349,4 +349,33 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("count",equalTo(3));
     }
+
+    @Test
+    public void testUpdatePerson() {
+        int pid = p1.getId();
+        int phone = p1.getPhone();
+        String email = p1.getEmail();
+        String firstName = "updatedName";
+        String lastName = p1.getLastName();
+        String street = p1.getAddress().getStreet();
+        String zipcode = p1.getAddress().getZipcode().getZipcode();
+
+        PersonDTO personToCreate = new PersonDTO(pid,
+                phone, email, firstName,
+                lastName, street, zipcode);
+
+        given()
+                .contentType("application/json")
+                .body(GSON.toJson(personToCreate))
+                .put("person/")
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("phone", equalTo(phone)).and()
+                .body("email", equalTo(email)).and()
+                .body("firstName", equalTo(firstName)).and()
+                .body("street", equalTo(street)).and()
+                .body("zipcode", equalTo(zipcode));
+
+    }
 }

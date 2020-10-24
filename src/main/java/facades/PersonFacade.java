@@ -272,14 +272,19 @@ public class PersonFacade {
 
 
     public PersonDTO updatePerson(PersonDTO updatedPerson) throws MalformedRequest, PersonNotFound, ZipcodeNotFound {
-        if(updatedPerson.getPid() == 0
-                || isNullOrEmpty(updatedPerson.getEmail())
-                || isNullOrEmpty(updatedPerson.getFirstName())
-                || isNullOrEmpty(updatedPerson.getLastName())
-                || isNullOrEmpty(updatedPerson.getStreet())
-                || isNullOrEmpty(updatedPerson.getZipcode())){
+        try {
+            if(updatedPerson.getPid() < 1
+                    || isNullOrEmpty(updatedPerson.getEmail())
+                    || isNullOrEmpty(updatedPerson.getFirstName())
+                    || isNullOrEmpty(updatedPerson.getLastName())
+                    || isNullOrEmpty(updatedPerson.getStreet())
+                    || isNullOrEmpty(updatedPerson.getZipcode())){
+                throw new MalformedRequest("Error, person must contain pid, phone, email, first name, last name, street and zipcode");
+            };
+        } catch (Exception e) {
             throw new MalformedRequest("Error, person must contain pid, phone, email, first name, last name, street and zipcode");
-        };
+        }
+
 
         EntityManager em = null;
         Person person = null;
