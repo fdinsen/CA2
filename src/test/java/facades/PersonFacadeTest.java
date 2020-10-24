@@ -459,4 +459,50 @@ public class PersonFacadeTest {
 
         assertNotNull(assertThrows);
     }
+
+    @Test
+    public void testUpdatePerson() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        String expectedEmail = "newEmail@gmail.com";
+        System.out.println(p1.getAddress().getStreet());
+        System.out.println(p1.getAddress().getZipcode().getZipcode());
+
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),expectedEmail,p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+       PersonDTO updatedPerson = facade.updatePerson(personDTO);
+
+        assertEquals(expectedEmail, updatedPerson.getEmail());
+    }
+
+    @Test
+    public void testUpdatePersonEmptyEmail() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        String expectedEmail = "";
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),expectedEmail,p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+
+        MalformedRequest assertThrows = Assertions.assertThrows(MalformedRequest.class, () -> {
+            facade.updatePerson(personDTO);
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testUpdatePersonWrongZipcode() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),p1.getEmail(),p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),"12344321");
+
+        ZipcodeNotFound assertThrows = Assertions.assertThrows(ZipcodeNotFound.class, () -> {
+            facade.updatePerson(personDTO);
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testUpdatePersonWrongPID() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        PersonDTO personDTO = new PersonDTO(-1,p1.getPhone(),p1.getEmail(),p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+
+        PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.updatePerson(personDTO);
+        });
+
+        assertNotNull(assertThrows);
+    }
 }

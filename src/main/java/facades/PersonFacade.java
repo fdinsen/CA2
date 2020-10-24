@@ -272,6 +272,15 @@ public class PersonFacade {
 
 
     public PersonDTO updatePerson(PersonDTO updatedPerson) throws MalformedRequest, PersonNotFound, ZipcodeNotFound {
+        if(updatedPerson.getPid() == 0
+                || isNullOrEmpty(updatedPerson.getEmail())
+                || isNullOrEmpty(updatedPerson.getFirstName())
+                || isNullOrEmpty(updatedPerson.getLastName())
+                || isNullOrEmpty(updatedPerson.getStreet())
+                || isNullOrEmpty(updatedPerson.getZipcode())){
+            throw new MalformedRequest("Error, person must contain pid, phone, email, first name, last name, street and zipcode");
+        };
+
         EntityManager em = null;
         Person person = null;
         try {
@@ -298,6 +307,7 @@ public class PersonFacade {
         Address address = new Address(updatedPerson.getStreet());
         address.setZipcode(cityinfo);
 
+
         try {
             em = getEntityManager();
 
@@ -313,9 +323,16 @@ public class PersonFacade {
 
             return new PersonDTO(person);
         } catch (Exception ex) {
-            throw new MalformedRequest("Error, person must contain phone, email, first name, last name, street and zipcode");
+            throw new MalformedRequest("Something went wrong while trying to update person");
         } finally {
             em.close();
         }
+    }
+
+
+    public static boolean isNullOrEmpty(String str) {
+        if(str != null && !str.isEmpty())
+            return false;
+        return true;
     }
 }
