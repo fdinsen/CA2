@@ -20,19 +20,19 @@ import javax.ws.rs.ext.Provider;
  * @author gamma
  */
 @Provider
-public class PersonNotFoundMapper implements ExceptionMapper<PersonNotFound> 
+public class PersonNotFoundMapper implements ExceptionMapper<PersonNotFound>
 {
-    static Gson gson = new GsonBuilder().setPrettyPrinting().create();   
+    static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @Override
     public Response toResponse(PersonNotFound ex) {
-       Logger.getLogger(PersonNotFoundMapper.class.getName())
-           .log(Level.SEVERE, null, ex);
-       ExceptionDTO err = new ExceptionDTO(404,ex.getMessage());
-       return Response
-               .status(404)
-               .entity(gson.toJson(err))
-               .type(MediaType.APPLICATION_JSON)
-               .build();
-	}
+        Logger.getLogger(PersonNotFoundMapper.class.getName())
+                .log(Level.SEVERE, null, ex);
+        ExceptionDTO err = new ExceptionDTO(404,ex.getMessage());
+        return Response
+                .status(404)
+                .entity(gson.toJson(err))
+                .type(MediaType.APPLICATION_JSON)
+                .build();
+    }
 }
 
