@@ -90,17 +90,25 @@ public class PersonFacade {
         }
     }
 
-    public PersonDTO addHobbyToPerson(int personID, String hobbyName) throws HobbyNotFound, PersonNotFound {
+    public PersonDTO addHobbyToPerson(int personID, String hobbyName) throws HobbyNotFound, PersonNotFound, Exception {
         EntityManager em = getEntityManager();
         try {
             Person person = em.find(Person.class, personID);
             Hobby hobby = em.find(Hobby.class, hobbyName);
+            
             if (person == null) {
                 throw new PersonNotFound("No person found by id " + personID);
             }
             if (hobby == null) {
                 throw new HobbyNotFound("No hobby found by id " + hobbyName);
             }
+            
+            for (Hobby hobbyelement : person.getHobbyList()) {
+                if(hobbyelement.getName().equals(hobby.getName())){
+                    throw new Exception("This hobby: "+ hobbyName +" does allready excists on this person");
+                }
+            }
+            
             person.addHobby(hobby);
 
             em.getTransaction().begin();
