@@ -92,3 +92,32 @@ Taiga Sprint Backlog: https://tree.taiga.io/project/rodedrengen-ca2/backlog
 </ul>
 
 <h3>Third Period:</h3>
+<ul>
+<li>Who was active during this sprint?</li>
+<ul><li>Everyone</li></ul>
+
+<li>Who did what, during this sprint?</li>
+<ul>
+<li>Get count of Hobby</li>
+<ul><li>Simon</li></ul>
+
+<li>Get all Hobbies</li>
+<ul><li>Frederik/li></ul>
+
+<li>Delete Hobby from person</li>
+<ul><li>Frederik</li></ul>
+
+<li>Get all with same Hobby</li>
+<ul><li>Oliver</li></ul>
+
+<li>Get all with same city </li>
+<ul><li>Oliver</li></ul>
+
+<li>Edit person</li>
+<ul><li>Oliver</li></ul>
+
+</ul>
+<li>What did your team accomplish during this sprint?</li>
+<ul><li>Fikset nogle dokumentationsfejl angående Rest API</li></ul>
+<ul><li>Alle metoder og funktioner er lavet</li></ul>
+</ul>
