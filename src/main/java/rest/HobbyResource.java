@@ -30,6 +30,7 @@ public class HobbyResource {
     private static final HobbyFacade FACADE = HobbyFacade.getHobbyFacade(EMF);
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
+    @Path("/all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllHobbies() {
