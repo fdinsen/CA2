@@ -70,7 +70,7 @@ public class Person implements Serializable {
     @Size(min = 1, max = 45)
     @Column(name = "lastName")
     private String lastName;
-    @ManyToMany(mappedBy = "personList")
+    @ManyToMany(mappedBy = "personList",cascade = CascadeType.PERSIST)
     private List<Hobby> hobbyList = new ArrayList();
     @JoinColumn(name = "a_id", referencedColumnName = "a_id")
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
@@ -147,6 +147,22 @@ public class Person implements Serializable {
             hobbyList.add(hobby);
             hobby.addPersonToList(this);
         }
+    }
+    
+    public boolean removeHobby(String hobbyName) {
+        boolean removed = false;
+        Hobby hobbyToRemove = null;
+        for(Hobby hobby : hobbyList) {
+            if(hobby.getName().equals(hobbyName)) {
+                hobbyToRemove = hobby;
+                removed = true;
+            }
+        }
+        if(hobbyToRemove != null) {
+            hobbyList.remove(hobbyToRemove);
+        }
+        
+        return removed;
     }
 
     public Address getAddress() {
