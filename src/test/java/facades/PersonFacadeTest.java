@@ -255,7 +255,7 @@ public class PersonFacadeTest {
 
     //@Disabled
     @Test
-    public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound {
+    public void testAddHobbyToPersonOnReturn() throws HobbyNotFound, PersonNotFound, Exception {
         //Arrange
         int personId = p5.getId();
         String hobbyName = h4.getName();
@@ -271,7 +271,7 @@ public class PersonFacadeTest {
 
     //@Disabled
     @Test
-    public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound {
+    public void testAddHobbyToPersonOnDB() throws HobbyNotFound, PersonNotFound, Exception {
         //Arrange
         EntityManager em = emf.createEntityManager();
         int personId = p5.getId();
@@ -290,7 +290,7 @@ public class PersonFacadeTest {
 
     //@Disabled
     @Test
-    public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound {
+    public void testAddHobbyToPersonOnDBMultipleHobbies() throws HobbyNotFound, PersonNotFound, Exception {
         //Arrange
         EntityManager em = emf.createEntityManager();
         int personId = p5.getId();
@@ -352,12 +352,12 @@ public class PersonFacadeTest {
     }
     
     @Test
-    public void testDeleteSingleHobbyFromPerson() throws HobbyNotFound, PersonNotFound {
+    public void testDeleteSingleHobbyFromPerson() throws HobbyNotFound, PersonNotFound, Exception {
         //Arrange
         int personId = p4.getId();
         String hobbyName = h3.getName();
         EntityManager em = emf.createEntityManager();
-        facade.addHobbyToPerson(personId, hobbyName);
+        facade.addHobbyToPerson(personId,  hobbyName);
         int expSize = 1;
         
         //Act

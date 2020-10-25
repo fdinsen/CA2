@@ -84,7 +84,7 @@ public class HobbyResourceTest {
 
             test = em.find(Cityinfo.class, "3400");
             hTest = em.find(Hobby.class, "Spil");
-                        
+            
             if (test == null) {
 
                 Cityinfo c = new Cityinfo("3360", "Liseleje");
@@ -138,17 +138,17 @@ public class HobbyResourceTest {
     @Test
     public void testServerIsUp() {
         System.out.println("Testing is server UP");
-        given().when().get("hobby").then().statusCode(200);
+        given().when().get("hobby/all").then().statusCode(200);
     }
 
     @Test
     public void testGetAllHobbiesOnSize() {
-        given().contentType("application/json").get("hobby").then().assertThat().body("size()", is(4));
+        given().contentType("application/json").get("hobby/all").then().assertThat().body("size()", is(4));
     }
     
     @Test
     public void testGetAllHobbiesOnContent() {
-        given().contentType("application/json").get("hobby").then().assertThat()
+        given().contentType("application/json").get("hobby/all").then().assertThat()
                 .body("name", hasItem(h1.getName())).and()
                 .body("name", hasItem(h2.getName())).and()
                 .body("name", hasItem(h3.getName())).and()
@@ -157,7 +157,7 @@ public class HobbyResourceTest {
     
     @Test
     public void testGetAllHobbiesOnContentWikilink() {
-        given().contentType("application/json").get("hobby").then().assertThat()
+        given().contentType("application/json").get("hobby/all").then().assertThat()
                 .body("wikilink", hasItem(h1.getWikilink())).and()
                 .body("wikilink", hasItem(h2.getWikilink())).and()
                 .body("wikilink", hasItem(h3.getWikilink())).and()
@@ -166,7 +166,7 @@ public class HobbyResourceTest {
     
     @Test
     public void testGetAllHobbiesOnContentCategory() {
-        given().contentType("application/json").get("hobby").then().assertThat()
+        given().contentType("application/json").get("hobby/all").then().assertThat()
                 .body("category", hasItem(h1.getCategory())).and()
                 .body("category", hasItem(h2.getCategory())).and()
                 .body("category", hasItem(h3.getCategory())).and()
@@ -175,7 +175,7 @@ public class HobbyResourceTest {
     
     @Test
     public void testGetAllHobbiesOnContentType() {
-        given().contentType("application/json").get("hobby").then().assertThat()
+        given().contentType("application/json").get("hobby/all").then().assertThat()
                 .body("type", hasItem(h1.getType())).and()
                 .body("type", hasItem(h2.getType())).and()
                 .body("type", hasItem(h3.getType())).and()

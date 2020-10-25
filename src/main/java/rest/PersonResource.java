@@ -61,7 +61,7 @@ public class PersonResource {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addHobbyToPerson(
             @PathParam("pid") int pid,
-            @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound {
+            @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound, Exception {
         PersonDTO hobby = FACADE.addHobbyToPerson(pid, hobbyName);
         return Response.ok().entity(GSON.toJson(hobby)).build();
     }
@@ -84,7 +84,7 @@ public class PersonResource {
             @PathParam("pid") int personId, 
             @PathParam("hname") String hobbyName) throws HobbyNotFound, PersonNotFound {
         FACADE.removeHobbyFromPerson(personId, hobbyName);
-        return "{msg: \"hobby deleted from person\"}";
+        return "{\"msg\": \"hobby deleted from person\"}";
     }
   
     @Path("/hobby/{hid}/count")
