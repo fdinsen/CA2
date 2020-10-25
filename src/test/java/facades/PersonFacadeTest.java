@@ -405,7 +405,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcode() throws PersonNotFound, ZipcodeNotFound {
+    public void testGetPeopleWithSameZipcode() throws PersonNotFound, ZipcodeNotFound {
         int expectedSize = 2;
 
         List<PersonDTO> persons = facade.getPeopleWithSameZipcode("3400");
@@ -415,7 +415,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcodeWrongZipcode() throws ZipcodeNotFound {
+    public void testGetPeopleWithSameZipcodeWrongZipcode() throws ZipcodeNotFound {
         ZipcodeNotFound assertThrows = Assertions.assertThrows(ZipcodeNotFound.class, () -> {
             facade.getPeopleWithSameZipcode("2");
         });
@@ -424,9 +424,86 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testgetPeopleWithSameZipcodeCorrectZipCodeNoPeople() throws PersonNotFound {
+    public void testGetPeopleWithSameZipcodeCorrectZipCodeNoPeople() throws PersonNotFound {
         PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
             facade.getPeopleWithSameZipcode("3360");
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobby() throws PersonNotFound, HobbyNotFound {
+        int expectedSize = 3;
+
+        List<PersonDTO> persons = facade.getPeopleWithSameHobby(h2.getName());
+        int actualSize = persons.size();
+
+        assertEquals(expectedSize, actualSize);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobbyWrongHobby() throws HobbyNotFound {
+        HobbyNotFound assertThrows = Assertions.assertThrows(HobbyNotFound.class, () -> {
+            facade.getPeopleWithSameHobby("NotFound");
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testGetPeopleWithSameHobbyZipCodeNoPeople() throws PersonNotFound {
+        PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.getPeopleWithSameHobby(h3.getName());
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testUpdatePerson() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        String expectedEmail = "newEmail@gmail.com";
+        System.out.println(p1.getAddress().getStreet());
+        System.out.println(p1.getAddress().getZipcode().getZipcode());
+
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),expectedEmail,p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+       PersonDTO updatedPerson = facade.updatePerson(personDTO);
+
+        assertEquals(expectedEmail, updatedPerson.getEmail());
+    }
+
+    @Test
+    public void testUpdatePersonEmptyEmail() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        String expectedEmail = "";
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),expectedEmail,p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+
+        MalformedRequest assertThrows = Assertions.assertThrows(MalformedRequest.class, () -> {
+            facade.updatePerson(personDTO);
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+    @Test
+    public void testUpdatePersonWrongZipcode() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        PersonDTO personDTO = new PersonDTO(p1.getId(),p1.getPhone(),p1.getEmail(),p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),"12344321");
+
+        ZipcodeNotFound assertThrows = Assertions.assertThrows(ZipcodeNotFound.class, () -> {
+            facade.updatePerson(personDTO);
+        });
+
+        assertNotNull(assertThrows);
+    }
+
+
+    //Er ikke et instanceof WebApplicationException ???
+    @Disabled
+    @Test
+    public void testUpdatePersonWrongPID() throws ZipcodeNotFound, PersonNotFound, MalformedRequest {
+        PersonDTO personDTO = new PersonDTO(-1,p1.getPhone(),p1.getEmail(),p1.getFirstName(),p1.getLastName(),p1.getAddress().getStreet(),p1.getAddress().getZipcode().getZipcode());
+
+        PersonNotFound assertThrows = Assertions.assertThrows(PersonNotFound.class, () -> {
+            facade.updatePerson(personDTO);
         });
 
         assertNotNull(assertThrows);

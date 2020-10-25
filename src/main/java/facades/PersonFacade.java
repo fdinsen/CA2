@@ -226,4 +226,118 @@ public class PersonFacade {
 
         return resPersons;
     }
+
+    public List<PersonDTO> getPeopleWithSameHobby(String hobbyName) throws PersonNotFound, HobbyNotFound {
+        EntityManager em = null;
+
+        Hobby hobby = null;
+        try {
+            em = getEntityManager();
+            hobby = em.find(Hobby.class, hobbyName);
+
+            if(hobby == null)  throw new HobbyNotFound("Hoppy not found with name: " + hobbyName);
+
+        } catch (Exception e) {
+            throw new HobbyNotFound("Hoppy not found with name: " + hobbyName);
+        } finally {
+            em.close();
+        }
+
+
+        List<PersonDTO> resPersons = new ArrayList<>();
+        try {
+            em = getEntityManager();
+
+            em.getTransaction().begin();
+            Query query = em.createQuery("SELECT p FROM Person p join p.hobbyList h where h = :hobby");
+
+            query.setParameter("hobby", hobby);
+
+            List<Person> persons = query.getResultList();
+
+            if(persons == null || persons.size() == 0)  throw new PersonNotFound("No persons found with hobby: " + hobbyName);
+
+            for (Person person: persons){
+                PersonDTO DTOtoReturn = new PersonDTO(person);
+                resPersons.add(DTOtoReturn);
+            }
+        } catch (Exception e) {
+            throw new PersonNotFound("No persons found with hobby: " + hobbyName);
+        } finally {
+            em.close();
+        }
+
+        return resPersons;
+    }
+
+
+    public PersonDTO updatePerson(PersonDTO updatedPerson) throws MalformedRequest, PersonNotFound, ZipcodeNotFound {
+        try {
+            if(updatedPerson.getPid() < 1
+                    || isNullOrEmpty(updatedPerson.getEmail())
+                    || isNullOrEmpty(updatedPerson.getFirstName())
+                    || isNullOrEmpty(updatedPerson.getLastName())
+                    || isNullOrEmpty(updatedPerson.getStreet())
+                    || isNullOrEmpty(updatedPerson.getZipcode())){
+                throw new MalformedRequest("Error, person must contain pid, phone, email, first name, last name, street and zipcode");
+            };
+        } catch (Exception e) {
+            throw new MalformedRequest("Error, person must contain pid, phone, email, first name, last name, street and zipcode");
+        }
+
+
+        EntityManager em = null;
+        Person person = null;
+        try {
+            em = getEntityManager();
+            person = em.find(Person.class, updatedPerson.getPid());
+            if(person == null)  throw new PersonNotFound("No person found with id: " + updatedPerson.getPid());
+        } catch (Exception e) {
+            throw new PersonNotFound("No person found with id: " + updatedPerson.getPid());
+        } finally {
+            em.close();
+        }
+
+        Cityinfo cityinfo = null;
+        try {
+            em = getEntityManager();
+            cityinfo = em.find(Cityinfo.class, updatedPerson.getZipcode());
+            if(cityinfo == null)  throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + updatedPerson.getZipcode());
+        } catch (Exception e) {
+            throw new ZipcodeNotFound("No zipcode/city found with zipcode: " + updatedPerson.getZipcode());
+        } finally {
+            em.close();
+        }
+
+        Address address = new Address(updatedPerson.getStreet());
+        address.setZipcode(cityinfo);
+
+
+        try {
+            em = getEntityManager();
+
+            person.setFirstName(updatedPerson.getFirstName());
+            person.setLastName(updatedPerson.getLastName());
+            person.setEmail(updatedPerson.getEmail());
+            person.setAddress(address);
+            person.setPhone(updatedPerson.getPhone());
+
+            em.getTransaction().begin();
+            em.merge(person);
+            em.getTransaction().commit();
+
+            return new PersonDTO(person);
+        } catch (Exception ex) {
+            throw new MalformedRequest("Something went wrong while trying to update person");
+        } finally {
+            em.close();
+        }
+    }
+
+
+    public static boolean isNullOrEmpty(String str) {
+        if(str != null && !str.isEmpty())
+            return false;
+        return true;
+    }
 }
